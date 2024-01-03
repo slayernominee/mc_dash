@@ -1,6 +1,13 @@
+"use client"
+import { usePathname } from 'next/navigation'
+
+
+
 export default function Sidebar() {
+    const pathname = usePathname();
     return (
-        <div className="flex">
+        <div className="flex">            
+
         <div className="flex h-screen w-16 flex-col justify-between border-e bg-white">
         <div>
         <div className="inline-flex h-16 w-16 items-center justify-center">
@@ -193,7 +200,7 @@ export default function Sidebar() {
         </button>
         </form>
         </div>
-        </div>
+        di</div>
         
         <div className="flex h-screen flex-1 flex-col justify-between border-e bg-white">
         <div className="px-4 py-6">
@@ -201,14 +208,14 @@ export default function Sidebar() {
         <li>
         <a
         href="/dashboard/"
-        className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         General
         </a>
         </li>
         
         <li>
-        <details className="group [&_summary::-webkit-details-marker]:hidden">
+        <details className="group [&_summary::-webkit-details-marker]:hidden" open={pathname.startsWith("/dashboard/players")}>
         <summary
         className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
         >
@@ -235,7 +242,7 @@ export default function Sidebar() {
         <li>
         <a
         href="/dashboard/players/ops"
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/players/ops'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Operators
         </a>
@@ -244,7 +251,7 @@ export default function Sidebar() {
         <li>
         <a
         href="/dashboard/players/banned"
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/players/banned'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Banned Players
         </a>
@@ -258,7 +265,7 @@ export default function Sidebar() {
         <li>
         <a
         href="/dashboard/console"
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/console'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Console
         </a>
@@ -267,7 +274,7 @@ export default function Sidebar() {
         <li>
         <a
         href="/dashboard/files"
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/files'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Files
         </a>
