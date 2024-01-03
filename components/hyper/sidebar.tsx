@@ -1,7 +1,6 @@
 "use client"
 import { usePathname } from 'next/navigation'
-
-
+import Link from 'next/link'
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -21,9 +20,9 @@ export default function Sidebar() {
         <div className="border-t border-gray-100">
         <div className="px-2">
         <div className="py-4">
-        <a
-        href=""
-        className="t group relative flex justify-center rounded bg-blue-50 px-2 py-1.5 text-blue-700"
+        <Link
+        href="/dashboard/"
+        className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname === '/dashboard' ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -50,14 +49,14 @@ export default function Sidebar() {
         >
         General
         </span>
-        </a>
+        </Link>
         </div>
         
         <ul className="space-y-1 border-t border-gray-100 pt-4">
         <li>
-        <a
+        <Link
         href=""
-        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname.startsWith("/dashboard/players/") ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -79,13 +78,13 @@ export default function Sidebar() {
         >
         Players
         </span>
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
-        href=""
-        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        <Link
+        href="/dashboard/console"
+        className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname === '/dashboard/console' ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -107,13 +106,13 @@ export default function Sidebar() {
         >
         Console
         </span>
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
-        href=""
-        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        <Link
+        href="/dashboard/files"
+        className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname === '/dashboard/files' ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -135,13 +134,13 @@ export default function Sidebar() {
         >
         Files
         </span>
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
+        <Link
         href=""
-        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+        className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname.startsWith("/dashboard/advanced/") ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +163,7 @@ export default function Sidebar() {
         >
         Advanced
         </span>
-        </a>
+        </Link>
         </li>
         </ul>
         </div>
@@ -206,12 +205,12 @@ export default function Sidebar() {
         <div className="px-4 py-6">
         <ul className="mt-14 space-y-1">
         <li>
-        <a
+        <Link
         href="/dashboard/"
         className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         General
-        </a>
+        </Link>
         </li>
         
         <li>
@@ -240,21 +239,21 @@ export default function Sidebar() {
         <ul className="mt-2 space-y-1 px-4">
         
         <li>
-        <a
+        <Link
         href="/dashboard/players/ops"
         className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/players/ops'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Operators
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
+        <Link
         href="/dashboard/players/banned"
         className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/players/banned'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Banned Players
-        </a>
+        </Link>
         </li>
         
         
@@ -263,21 +262,21 @@ export default function Sidebar() {
         </li>
         
         <li>
-        <a
+        <Link
         href="/dashboard/console"
         className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/console'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Console
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
+        <Link
         href="/dashboard/files"
         className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/files'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Files
-        </a>
+        </Link>
         </li>
         
         <li>
