@@ -200,7 +200,7 @@ export default function Sidebar() {
         </button>
         </form>
         </div>
-        di</div>
+        </div>
         
         <div className="flex h-screen flex-1 flex-col justify-between border-e bg-white">
         <div className="px-4 py-6">
