@@ -5,14 +5,19 @@ import { Button } from '@/components/ui/button'
 
 export default function Console() {
     const WS_URL = "ws://127.0.0.1:8778"
-    
+
     const cmd = useRef(null);
+    const sendMessages = useRef([]);
 
     const [socketUrl] = useState(WS_URL);
     const [messageHistory, setMessageHistory] = useState([]);
-    
+
     const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
     
+    useEffect(() => {
+        sendMessage("1234")
+    }, [])
+
     useEffect(() => {
         if (lastMessage !== null) {
             setMessageHistory((prev) => prev.concat(lastMessage));
@@ -20,6 +25,7 @@ export default function Console() {
     }, [lastMessage, setMessageHistory]);
     
     const handleClickSendMessage = async () => {
+        sendMessages.current.push(cmd.current.value)
         sendMessage(cmd.current.value)
         cmd.current.value = ""
     }
@@ -27,15 +33,19 @@ export default function Console() {
     const keyUpHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             handleClickSendMessage()
+        } else if (event.key === 'ArrowUp') {
+            if (sendMessages.current.length > 0) {
+                cmd.current.value = sendMessages.current[sendMessages.current.length - 1]
+            }
         }
     }
-    
+
     return (
-        <div className="bg-gray-900 text-gray-100 w-full relative h-full rounded-sm border-white border pt-3">
-        <div className="px-4 overflow-y-scroll break-words h-full">
-        Please first send the Token to Authentificate ...
-        {messageHistory.map((message, idx) => (
-            <p key={idx} dangerouslySetInnerHTML={message ? { __html: message.data } : null} />
+        <div className="bg-gray-900 text-gray-100 w-full relative h-[33rem] rounded-sm border-white border pt-3">
+        <div className="px-4 overflow-y-scroll break-words h-[29rem] flex flex-col-reverse">
+            <div className="h-[29rem]"></div>
+        {messageHistory.toReversed().map((message, idx) => (
+            <span key={idx} dangerouslySetInnerHTML={message ? { __html: message.data } : null} />
             ))}
             </div>
 

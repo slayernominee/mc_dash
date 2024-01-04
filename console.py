@@ -50,14 +50,16 @@ async def input_handler(websocket):
             if message == TOKEN:
                 AUTHENTIFICATED.add(websocket)
                 print("Authentificated a new Websocket")
-                await websocket.send("Authentificated")
+                #await websocket.send("Authentificated")
                 continue
             else:
                 print("Authentification failed")
                 return
         
+        if message == TOKEN:
+            continue
+        
         print("> " + message)
-        await websocket.send("> " + message)
 
         if message == "stop":
             print("Should stop also the websocket server")
