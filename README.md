@@ -1,3 +1,9 @@
+# MC Dash
+A free & opensource Minecraft Dashboard to control your server
+
+![.github/assets/console.webp]
+
+
 ## Development
 
 add a folder called `server` and put the `paper.jar` file in it that will run the server
