@@ -8,7 +8,7 @@ export default function Console() {
     
     const cmd = useRef(null);
 
-    const [socketUrl, setSocketUrl] = useState(WS_URL);
+    const [socketUrl] = useState(WS_URL);
     const [messageHistory, setMessageHistory] = useState([]);
     
     const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
@@ -22,6 +22,12 @@ export default function Console() {
     const handleClickSendMessage = async () => {
         sendMessage(cmd.current.value)
         cmd.current.value = ""
+    }
+
+    const keyUpHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleClickSendMessage()
+        }
     }
     
     return (
@@ -37,7 +43,7 @@ export default function Console() {
             
             <div className="flex bottom-0 left-0 bg-gray-800 px-4 outline-none absolute border-t h-12 border-white w-full text-gray-100">
             <span className="h-full text-xl pt-[0.475rem] pr-2 text-gray-400"> {'>'} </span>
-            <input className="h-full bg-transparent outline-none w-full" placeholder="Type 'help' for help" ref={cmd} />
+            <input className="h-full bg-transparent outline-none w-full" onKeyUp={keyUpHandler} placeholder="Type 'help' for help" ref={cmd} />
             <Button
             disabled={readyState !== ReadyState.OPEN}
             onClick={handleClickSendMessage}

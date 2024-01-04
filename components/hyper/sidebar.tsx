@@ -55,7 +55,7 @@ export default function Sidebar() {
         <ul className="space-y-1 border-t border-gray-100 pt-4">
         <li>
         <Link
-        href=""
+        href="/dashboard/players/ops"
         className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname.startsWith("/dashboard/players/") ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg
