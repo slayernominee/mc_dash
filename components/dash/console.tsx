@@ -24,15 +24,16 @@ export default function Console() {
         cmd.current.value = ""
     }
     
-    
     return (
-        <div className="bg-gray-900 text-gray-100 w-[50rem] relative h-96 rounded-sm border-white border pt-3">
-        <div className="px-4 overflow-y-scroll break-words h-[100%]">
+        <div className="bg-gray-900 text-gray-100 w-full relative h-full rounded-sm border-white border pt-3">
+        <div className="px-4 overflow-y-scroll break-words h-full">
         Please first send the Token to Authentificate ...
         {messageHistory.map((message, idx) => (
             <p key={idx} dangerouslySetInnerHTML={message ? { __html: message.data } : null} />
             ))}
             </div>
+
+            <div className="h-12 w-full"></div>
             
             <div className="flex bottom-0 left-0 bg-gray-800 px-4 outline-none absolute border-t h-12 border-white w-full text-gray-100">
             <span className="h-full text-xl pt-[0.475rem] pr-2 text-gray-400"> {'>'} </span>

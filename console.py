@@ -57,6 +57,7 @@ async def input_handler(websocket):
                 return
         
         print("> " + message)
+        await websocket.send("> " + message)
 
         if message == "stop":
             print("Should stop also the websocket server")
