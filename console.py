@@ -14,7 +14,6 @@ PORT = getenv("PORT")
 # Authentification with the first message, else close the connection
 # TODO: there need to be rate limits etc to prevent spamming, payload max size etc
 
-
 AnsiConv = Ansi2HTMLConverter()
 
 def execute(popen):
@@ -33,9 +32,13 @@ popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, uni
 async def send_output():
     for line in execute(popen):
         print(line, end="")
-        for websocket in AUTHENTIFICATED:
-            html = AnsiConv.convert(line.strip(), full=True)
-            await websocket.send(html)
+        html = AnsiConv.convert(line.strip(), full=True)
+        aut = AUTHENTIFICATED.copy()
+        for websocket in aut:
+            try:
+                await websocket.send(html)
+            except:
+                AUTHENTIFICATED.remove(websocket)
 
 AUTHENTIFICATED = set()
 

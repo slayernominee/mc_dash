@@ -41,9 +41,9 @@ export default function Console() {
     }
 
     return (
-        <div className="bg-gray-900 text-gray-100 w-full relative h-[33rem] rounded-sm border-white border pt-3">
-        <div className="px-4 overflow-y-scroll break-words h-[29rem] flex flex-col-reverse">
-            <div className="h-[29rem]"></div>
+        <div className="bg-gray-900 text-gray-100 w-full relative h-[39rem] rounded-sm border-white border pt-3">
+        <div className="px-4 overflow-y-scroll break-words h-[35rem] flex flex-col-reverse">
+            <div className="h-[35rem]"></div>
         {messageHistory.toReversed().map((message, idx) => (
             <span key={idx} dangerouslySetInnerHTML={message ? { __html: message.data } : null} />
             ))}
