@@ -4,6 +4,12 @@ import Link from 'next/link'
 
 export default function Sidebar() {
     const pathname = usePathname();
+
+    const handleLogout = async () => {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
+    }
+
     return (
         <div className="flex">            
 
@@ -171,9 +177,10 @@ export default function Sidebar() {
         </div>
         
         <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2">
-        <form action="/logout">
+        <form>
         <button
         type="submit"
+        onClick={handleLogout}
         className="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
         >
         <svg

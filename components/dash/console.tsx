@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Button } from '@/components/ui/button'
 
@@ -19,7 +19,12 @@ export default function Console() {
         if (lastMessage !== null) {
             setMessageHistory((prev) => prev.concat(lastMessage));
         } else if (!already_sent_one.current) {
-            sendMessage("1234")
+            if (localStorage.getItem("token") === null) {
+                window.location.href = "/login"
+            } else {
+                sendMessage(localStorage.getItem("token"))
+            }
+
             sendMessage("version")
             already_sent_one.current = true
         }
