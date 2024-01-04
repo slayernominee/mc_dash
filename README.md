@@ -1,6 +1,6 @@
 ## Development
 
-Visit the `.env` file and change the token there
+Visit the `.env` file and change the token, websocket port there
 
 ```sh
 pnpm install

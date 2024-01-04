@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = getenv("TOKEN")
+PORT = getenv("PORT")
 
 # Authentification with the first message, else close the connection
 # TODO: there need to be rate limits etc to prevent spamming, payload max size etc
@@ -61,7 +62,7 @@ async def input_handler(websocket):
         popen.stdin.flush()
 
 async def main():
-    async with serve(input_handler, "localhost", 8765) as websocket:
+    async with serve(input_handler, "localhost", PORT) as websocket:
         await asyncio.Future()  # run forever
   
 if __name__ == '__main__':
