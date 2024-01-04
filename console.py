@@ -1,11 +1,13 @@
+import asyncio
+import json
 import subprocess
 from os import chdir, getenv
 from threading import Thread
-import asyncio
-from websockets.server import serve
-from dotenv import load_dotenv
 from time import time
+
 from ansi2html import Ansi2HTMLConverter
+from dotenv import load_dotenv
+from websockets.server import serve
 
 load_dotenv()
 TOKEN = getenv("TOKEN")
@@ -66,6 +68,15 @@ async def input_handler(websocket):
 
         if message == "stop":
             print("Should stop also the websocket server")
+        
+        if message == "+ops":
+            with open('ops.json', 'r') as f:
+                ops = json.load(f)
+            ops_string = ""
+            for op in ops:
+                ops_string += str(op).replace("'", '"') + "\n"
+            await websocket.send(ops_string)
+            continue
         
         # ? maybe write a log file later on here too
                 

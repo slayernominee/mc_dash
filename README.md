@@ -21,7 +21,7 @@ will run the frontend on http://localhost:3000/dashboard
 python3 -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements.txt
-python3 server.py
+python3 console.py
 ```
 
 Will run the Websocket server

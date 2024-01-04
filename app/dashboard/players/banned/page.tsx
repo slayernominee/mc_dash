@@ -4,7 +4,9 @@ export default function Home() {
     return (
         <main className="grid grid-cols-6">
         <Sidebar />
-        <h1>Banned</h1>
+        <div className="w-full col-span-5 px-24 py-[10%]">
+            <h1>Banned</h1>
+        </div>
         </main>
     )
     }
