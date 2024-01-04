@@ -1,7 +1,7 @@
 # MC Dash
 A free & opensource Minecraft Dashboard to control your server
 
-![.github/assets/console.webp]
+![console image](.github/assets/console.webp)
 
 
 ## Development
