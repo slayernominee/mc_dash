@@ -6,6 +6,9 @@
 .pnp.js
 .yarn/install-state.gz
 
+# python venv
+.venv/
+
 # mc server
 server/
 
