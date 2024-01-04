@@ -8,6 +8,7 @@ export default function Console() {
 
     const cmd = useRef(null);
     const sendMessages = useRef([]);
+    const already_sent_one = useRef(false)
 
     const [socketUrl] = useState(WS_URL);
     const [messageHistory, setMessageHistory] = useState([]);
@@ -15,12 +16,12 @@ export default function Console() {
     const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
     
     useEffect(() => {
-        sendMessage("1234")
-    }, [])
-
-    useEffect(() => {
         if (lastMessage !== null) {
             setMessageHistory((prev) => prev.concat(lastMessage));
+        } else if (!already_sent_one.current) {
+            sendMessage("1234")
+            sendMessage("version")
+            already_sent_one.current = true
         }
     }, [lastMessage, setMessageHistory]);
     
