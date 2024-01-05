@@ -2,6 +2,7 @@ import asyncio
 import json
 import subprocess
 from os import chdir, getenv
+import os
 from threading import Thread
 from time import time
 
@@ -12,6 +13,13 @@ from websockets.server import serve
 load_dotenv()
 TOKEN = getenv("TOKEN")
 PORT = getenv("PORT")
+
+START_COMMAND = "java -jar paper.jar --nogui"
+
+""" 
++ops 
++ls
+"""
 
 # Authentification with the first message, else close the connection
 # TODO: there need to be rate limits etc to prevent spamming, payload max size etc
@@ -28,8 +36,10 @@ def execute(popen):
         raise subprocess.CalledProcessError(return_code, cmd)
 
 chdir("server")
-cmd = "java -jar paper.jar --nogui".split(" ")
-popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
+popen = subprocess.Popen("/bin/bash", stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
+
+#popen.stdin.write(START_COMMAND + "\n")
+#popen.stdin.flush()
 
 async def send_output():
     for line in execute(popen):
@@ -49,6 +59,7 @@ output.start()
 
 async def input_handler(websocket):
     global AUTHENTIFICATED
+    current_folder = os.getcwd()
     
     async for message in websocket: 
         if websocket not in AUTHENTIFICATED:
@@ -67,7 +78,13 @@ async def input_handler(websocket):
         print("> " + message)
 
         if message == "stop":
-            print("Should stop also the websocket server")
+            print("Should stop the minecraft server")
+        elif message == "start":
+            print("Starting the Minecraft Server")
+            popen.stdin.write(START_COMMAND + "\n")
+            popen.stdin.flush()            
+            continue
+        
         
         if message == "+ops":
             with open('ops.json', 'r') as f:
@@ -77,6 +94,10 @@ async def input_handler(websocket):
                 ops_string += str(op).replace("'", '"') + "\n"
             await websocket.send(ops_string)
             continue
+        elif message == "+ls":
+            ls = os.listdir(current_folder)
+            await websocket.send(str(ls))
+            continue
         
         # ? maybe write a log file later on here too
                 
@@ -84,7 +105,10 @@ async def input_handler(websocket):
         popen.stdin.flush()
     
     print("One Websocket just closed")
-    AUTHENTIFICATED.remove(websocket)
+    try:
+        AUTHENTIFICATED.remove(websocket)
+    except:
+        pass
 
 async def main():
     async with serve(input_handler, "localhost", PORT):

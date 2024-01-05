@@ -1,12 +1,30 @@
-import { Sidebar } from "@/components/hyper/sidebar"
+import { Button } from "@/components/ui/button"
+import { Layout } from "@/app/components/dash_lay"
 
 export default function Home() {
     return (
-        <main className="grid grid-cols-6">
-        <Sidebar />
-        <div className="w-full col-span-5 px-24 py-[10%]">
+            <Layout>
             <h1>General</h1>
-        </div>
-        </main>
+            
+            <div className="grid grid-cols-3">
+                <div>
+                    <div>
+                        <h2>Quick Commands</h2>
+                        <Button variant="secondary">Day</Button>
+                        <Button variant="secondary">Night</Button>
+                        <Button>Clear Weather</Button>
+                    </div>
+                </div>
+                <div className="col-span-2">
+                    <div>
+                        <h2>Players</h2>
+                        x / y online greendot
+                        Liste von ein paar
+                    </div>
+                </div>
+            </div>
+
+
+            </Layout>
         )
     }

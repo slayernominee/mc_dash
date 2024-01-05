@@ -1,10 +1,12 @@
-import { Sidebar } from "@/components/hyper/sidebar"
+import { Layout } from "@/app/components/dash_lay"
+import React, { useContext, useEffect } from 'react';
 
 export default function Home() {
+
     return (
-        <main className="grid grid-cols-6">
-        <Sidebar />
-        <h1>Files</h1>
-        </main>
-    )
+            <Layout>
+            <h1>Files</h1>
+
+            </Layout>
+        )
     }
