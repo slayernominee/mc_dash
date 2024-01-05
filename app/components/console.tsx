@@ -4,6 +4,10 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Button } from '@/components/ui/button'
 
 export default function Console() {
+
+    var Convert = require('ansi-to-html');
+    var convert = new Convert();
+
     const WS_URL = "ws://127.0.0.1:8778/ws/"
 
     const cmd = useRef(null);
@@ -51,7 +55,7 @@ export default function Console() {
         <div className="px-4 overflow-y-scroll break-words h-[35rem] flex flex-col-reverse">
             <div className="h-[35rem]"></div>
         {messageHistory.toReversed().map((message, idx) => (
-            <span key={idx} dangerouslySetInnerHTML={message ? { __html: message.data } : null} />
+            <span key={idx} dangerouslySetInnerHTML={message ? { __html: convert.toHtml(message.data) } : null} />
             ))}
             </div>
 

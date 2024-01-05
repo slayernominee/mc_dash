@@ -18,10 +18,8 @@ pnpm run dev
 will run the frontend on http://localhost:3000/dashboard
 
 ```sh
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
-python3 console.py
+cd dash
+cargo run
 ```
 
-Will run the Websocket server
+Will run the Websocket / API server
