@@ -151,7 +151,7 @@ fn cmd_handler(mut cmd: String) {
                         
                         if text == req_token.unwrap() {
                             self.authentificated = true;
-                            ctx.text("Authentificated!");
+                            // ctx.text("Authentificated!");
                             
                             let addr = ctx.address();
                             unsafe {
