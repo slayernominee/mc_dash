@@ -4,7 +4,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Button } from '@/components/ui/button'
 
 export default function Console() {
-    const WS_URL = "ws://127.0.0.1:8778/ws"
+    const WS_URL = "ws://127.0.0.1:8778/ws/"
 
     const cmd = useRef(null);
     const sendMessages = useRef([]);
