@@ -8,7 +8,7 @@ export default function Console() {
     var Convert = require('ansi-to-html');
     var convert = new Convert();
 
-    const WS_URL = "ws://127.0.0.1:8778/ws/"
+    const WS_URL = process.env.NEXT_PUBLIC_WS_URL
 
     const cmd = useRef(null);
     const sendMessages = useRef([]);

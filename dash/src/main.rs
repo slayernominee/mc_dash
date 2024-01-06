@@ -2,12 +2,13 @@ use actix_web::web::scope;
 use tokio::process::Command;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, BufWriter};
 use actix::{ActorContext, AsyncContext, Message, Handler, Addr, StreamHandler, Actor};
-use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, http};
 use actix_web_actors::ws;
 use tokio::sync::Mutex;
 use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 use dotenv::dotenv;
+use actix_cors::Cors;
 
 mod files;
 mod tokencheck;
@@ -213,13 +214,23 @@ fn cmd_handler(mut cmd: String) {
         println!("Please use the Server behind a reverse proxy like nginx to enable SSL!");
         
         // Start the server
-        let server = HttpServer::new(|| App::new()
+        let server = HttpServer::new(|| {
+            let cors = Cors::default()
+              .allowed_origin("http://localhost:3000")
+              .allowed_methods(vec!["GET", "POST"])
+              .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+              .allowed_header(http::header::CONTENT_TYPE)
+              .max_age(3600);
+            
+            App::new()
+            .wrap(cors)
             .route("/ws/", web::get().to(index))
             
             .service(scope("/api")
                 .wrap(tokencheck::TokenCheck)
                 .service(files::get_files)
             )
+        }
         ).bind(("127.0.0.1", port))?.run();
         
         // Await the httpserver process

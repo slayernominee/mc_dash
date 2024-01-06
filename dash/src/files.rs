@@ -13,10 +13,14 @@ struct FileInfo {
 /// Get a File or Direcotry
 #[post("/files/{pathname}")]
 pub async fn get_files(path: web::Path<String>) -> Result<impl Responder> {
-    let pathname = path.into_inner();
+    let mut pathname = path.into_inner();
 
     if pathname.contains("..") {
         return Ok(HttpResponse::BadRequest().body("Invalid Pathname!"));
+    }
+
+    if pathname == "&." {
+        pathname = ".".to_string();
     }
 
     let path = Path::new(&pathname);
