@@ -38,6 +38,11 @@ export default function Home() {
 
     useEffect(() => {
         getData(path).then(res => setData(res))
+
+        setInterval(() => {
+            getData(path).then(res => setData(res))
+        }, 15000) // refresh every 15 seconds
+
     }, [])
 
 
