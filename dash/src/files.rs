@@ -25,8 +25,6 @@ pub async fn get_files(path: web::Path<String>) -> Result<impl Responder> {
     pathname = pathname.replace("&.", ".");
     pathname = pathname.replace("&", "/");
     
-    println!("Pathname: {}", pathname);
-
     let path = Path::new(&pathname);
 
     if path.is_dir() {
