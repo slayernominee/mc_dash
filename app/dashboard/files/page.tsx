@@ -1,26 +1,16 @@
 "use client"
 import { Layout } from "@/app/components/dash_lay"
 import React, { useRef, useEffect, useState } from 'react';
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import Icon from '@mdi/react';
-import { mdiDeleteOutline, mdiFolderMoveOutline, mdiPencilOutline } from '@mdi/js';
+import { mdiDeleteOutline, mdiChevronLeft, mdiFolderMoveOutline, mdiHomeOutline, mdiPencilOutline, mdiReload, mdiCloudDownloadOutline, mdiCloudUploadOutline, mdiContentCopy } from '@mdi/js';
 
 import { File, columns } from "@/app/dashboard/files/columns"
 import { DataTable } from "@/app/dashboard/files/data-table"
 
 
-async function getData(): Promise<File[]> {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/files/&.', {
+async function getData(path: string): Promise<File[]> {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/files/' + path, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -39,17 +29,66 @@ async function getData(): Promise<File[]> {
 
 export default function Home() {
     const [data, setData] = useState<File[]>([])
+    const [path, setPath] = useState("&.")
+
+    const refresh = async () => {
+        const res = await getData(path)
+        setData(res)
+    }
 
     useEffect(() => {
-        getData().then(res => setData(res))
+        getData(path).then(res => setData(res))
     }, [])
+
+
+    const goToHome = async () => {
+        setPath("&.")
+        const res = await getData("&.")
+        setData(res)
+    }
+
+    const goUpwards = async () => {
+        const pathArr = path.split("&")
+        pathArr.pop()
+        const newPath = pathArr.join("&")
+        setPath(newPath)
+        const res = await getData(newPath)
+        setData(res)
+    }
+
+    const handleClick = async (cell: any) => {
+
+        if (cell.getContext().row.original.is_dir) {
+            // go in the directory
+            setPath(path + "&" + cell.getContext().row.original.name)
+            const res = await getData(path + "&" + cell.getContext().row.original.name)
+            setData(res)
+        } else {
+            // open the file? or download it?
+        }
+
+    }
 
     return (
             <Layout>
             <h1>Files</h1>
 
-            <DataTable columns={columns} data={data} />
+            { path }
 
+            <div>
+                <Button variant="secondary" disabled={path == '&.'} onClick={goToHome}><Icon path={mdiHomeOutline} size={1} /></Button>
+                <Button variant="secondary" disabled={path == '&.'} onClick={goUpwards}><Icon path={mdiChevronLeft} size={1} /></Button>
+
+                <Button variant="secondary"><Icon path={mdiCloudDownloadOutline} size={1} /></Button>
+                <Button variant="secondary"><Icon path={mdiCloudUploadOutline} size={1} /></Button>
+                <Button variant="secondary"><Icon path={mdiPencilOutline} size={1} /></Button>
+                <Button variant="secondary"><Icon path={mdiFolderMoveOutline} size={1} /></Button>
+                <Button variant="secondary"><Icon path={mdiContentCopy} size={1} /></Button>
+                <Button variant="secondary"><Icon path={mdiDeleteOutline} size={1} /></Button>
+                <Button variant="secondary" onClick={refresh}><Icon path={mdiReload} size={1} /></Button>
+            </div>
+
+            <DataTable cellClick={handleClick} columns={columns} data={data} />
 
             </Layout>
         )

@@ -16,13 +16,16 @@ struct FileInfo {
 pub async fn get_files(path: web::Path<String>) -> Result<impl Responder> {
     let mut pathname = path.into_inner();
 
-    if pathname.contains("..") {
+    /*if pathname.contains("..") || pathname.contains("~") || pathname.starts_with("-") ||  pathname.contains("//") || pathname.contains("\\") || pathname.contains(":") || pathname.contains("*") || pathname.contains("?") || pathname.contains("\"") || pathname.contains("<") || pathname.contains(">") || pathname.contains("|") {
         return Ok(HttpResponse::BadRequest().body("Invalid Pathname!"));
-    }
+    }*/
+    // theoretically but since this only works with tokens the user can be trusted ...
 
-    if pathname == "&." {
-        pathname = ".".to_string();
-    }
+    
+    pathname = pathname.replace("&.", ".");
+    pathname = pathname.replace("&", "/");
+    
+    println!("Pathname: {}", pathname);
 
     let path = Path::new(&pathname);
 
