@@ -9,14 +9,25 @@ export const metadata: Metadata = {
   description: 'An opensource selfhosted dashboard for Minecraft servers.',
 }
 
+import { ThemeProvider } from '@/components/theme'
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-        <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+      <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+        {children}
+        </ThemeProvider>
+        </body>
     </html>
     )
   }

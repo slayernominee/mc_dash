@@ -23,3 +23,11 @@ cargo run
 ```
 
 Will run the Websocket / API server
+
+
+## Deployment
+
+#### Build the Backend / Server
+...
+
+(explanation in progres ...)

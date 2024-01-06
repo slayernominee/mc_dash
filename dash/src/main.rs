@@ -1,3 +1,4 @@
+use actix_web::web::scope;
 use tokio::process::Command;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, BufWriter};
 use actix::{ActorContext, AsyncContext, Message, Handler, Addr, StreamHandler, Actor};
@@ -7,6 +8,9 @@ use tokio::sync::Mutex;
 use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 use dotenv::dotenv;
+
+mod files;
+mod tokencheck;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(10);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(600); // 10min
@@ -209,9 +213,14 @@ fn cmd_handler(mut cmd: String) {
         println!("Please use the Server behind a reverse proxy like nginx to enable SSL!");
         
         // Start the server
-        let server = HttpServer::new(|| App::new().route("/ws/", web::get().to(index)))
-        .bind(("127.0.0.1", port))?
-        .run();
+        let server = HttpServer::new(|| App::new()
+            .route("/ws/", web::get().to(index))
+            
+            .service(scope("/api")
+                .wrap(tokencheck::TokenCheck)
+                .service(files::get_files)
+            )
+        ).bind(("127.0.0.1", port))?.run();
         
         // Await the httpserver process
         server.await?;

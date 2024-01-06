@@ -65,6 +65,7 @@ export default function Console() {
             <span className="h-full text-xl pt-[0.475rem] pr-2 text-gray-400"> {'>'} </span>
             <input className="h-full bg-transparent outline-none w-full" onKeyUp={keyUpHandler} placeholder="Type 'help' for help" ref={cmd} />
             <Button
+            variant="ghost"
             disabled={readyState !== ReadyState.OPEN}
             onClick={handleClickSendMessage}
             >send</Button>
