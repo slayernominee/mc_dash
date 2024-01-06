@@ -10,60 +10,45 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-  
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
+import Icon from '@mdi/react';
+import { mdiDeleteOutline, mdiFolderMoveOutline, mdiPencilOutline } from '@mdi/js';
+
+import { File, columns } from "@/app/dashboard/files/columns"
+import { DataTable } from "@/app/dashboard/files/data-table"
 
 
+async function getData(): Promise<File[]> {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/files/&.', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+    }).then(res => res.json()).then((res) => {
+        res.map((file: any) => {
+            file.type = file.is_dir ? 'folder' : 'file'
+            return file
+        }
+        )
+        return res
+    })
+    return res
+}
 
 
 export default function Home() {
-
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<File[]>([])
 
     useEffect(() => {
-        async function fetchData() {
-            await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/files/&.', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                }
-            }).then(async (response) => {
-                if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' + response.status);
-                    return;
-                }
-                setData(await response.json())
-            })
-        }
-        fetchData()
+        getData().then(res => setData(res))
     }, [])
 
     return (
             <Layout>
             <h1>Files</h1>
 
-            <Table>
-            <TableCaption>Server Files.</TableCaption>
-            <TableHeader>
-                <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Modified</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-
-                { data && data.map((item, index) => (
-                    <TableRow key={index}>
-                    <TableCell>x</TableCell>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{`${item.is_dir}x`}</TableCell>
-                    <TableCell className="text-right">-</TableCell>
-                    </TableRow>
-                ))}
-
-            </TableBody>
-            </Table>
+            <DataTable columns={columns} data={data} />
 
 
             </Layout>

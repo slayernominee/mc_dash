@@ -8,6 +8,7 @@ use serde::Serialize;
 struct FileInfo {
     name: String,
     is_dir: bool,
+    modified: i128,
 }
 
 /// Get a File or Direcotry
@@ -35,6 +36,7 @@ pub async fn get_files(path: web::Path<String>) -> Result<impl Responder> {
             files.push(FileInfo {
                 name: file_name,
                 is_dir: file_type,
+                modified: path.metadata()?.modified()?.elapsed().unwrap().as_millis() as i128,
             });
         }
         Ok(HttpResponse::Ok().json(files))
