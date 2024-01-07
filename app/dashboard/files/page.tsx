@@ -1,6 +1,6 @@
 "use client"
 import { Layout } from "@/app/components/dash_lay"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { DragEventHandler, useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button"
 import Icon from '@mdi/react';
 import { mdiDeleteOutline, mdiChevronUp, mdiFolderMoveOutline, mdiHomeOutline, mdiPencilOutline, mdiReload, mdiCloudDownloadOutline, mdiCloudUploadOutline, mdiContentCopy } from '@mdi/js';
@@ -103,13 +103,40 @@ export default function Home() {
         refresh()
         
     }
-
+    
     const deleteSelected = async () => {
         const res = await Promise.all(selected.map((file) => deleteFile(path + "&" + file.getValue("name"))))
         const res2 = await getData(path)
         setData(res2)
         setSelected([])
         refresh()
+    }
+    
+    const addToFileUpload = async (e: any) => {
+        e.preventDefault();
+        const dataTransfer = e.dataTransfer;
+        const files = dataTransfer.files;
+        
+        const formData = new FormData()
+        
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i])
+        }
+        
+        await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/upload/' + path, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            },
+            body: formData,
+        })
+        
+        refresh()
+    }
+
+    const onDragOver = (e: any) => {
+        e.stopPropagation();
+        e.preventDefault();
     }
     
     return (
@@ -133,12 +160,12 @@ export default function Home() {
         <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiCloudDownloadOutline} size={1} /></Button>
         
         <Button variant="ghost" className="cursor-default">
-            <label htmlFor="fileUpload" className="cursor-pointer">
-            <Icon path={mdiCloudUploadOutline} size={1} />
-            </label>
+        <label htmlFor="fileUpload" className="cursor-pointer">
+        <Icon path={mdiCloudUploadOutline} size={1} />
+        </label>
         </Button>
         <input className="hidden" id="fileUpload" type="file" multiple onChange={uploadFiles} />
-
+        
         <Button variant="ghost" disabled={selected.length != 1}><Icon path={mdiPencilOutline} size={1} /></Button>
         <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiFolderMoveOutline} size={1} /></Button>
         <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiContentCopy} size={1} /></Button>
@@ -147,8 +174,9 @@ export default function Home() {
         </div>
         </div>
         
-        
+        <div onDragOver={onDragOver} onDrop={addToFileUpload}>
         <DataTable getSelected={setSelected} cellClick={handleClick} columns={columns} data={data} />
+        </div>
         
         </Layout>
         )
