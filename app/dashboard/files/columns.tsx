@@ -49,6 +49,13 @@ export const columns: ColumnDef<File>[] = [
         </Button>
       )
     },
+    cell: ({ row }) => {
+      const name: string = row.getValue("name")
+
+      return (
+        <div className="cursor-pointer h-full w-full">{ name }</div>
+      )
+    },
     
   },
   {
@@ -63,7 +70,7 @@ export const columns: ColumnDef<File>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
-    },
+    }
   },
   {
     accessorKey: "modified",
