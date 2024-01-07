@@ -7,6 +7,8 @@
 - [ ] download auto the minecraft server
 - [ ] auto start the server (is currently only possible via the console with `start` / `stop`)
 - [ ] start / stop the server
+- [ ] backend modifiable cors
+- [ ] bash script to generate a random token, port etc ...
 
 A free & opensource Minecraft Dashboard to control your server
 
