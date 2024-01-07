@@ -23,17 +23,18 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   cellClick: any
-  setSelection: any
+  getSelected: any
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   cellClick,
-  setSelection,
+  getSelected,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [rowSelection, setRowSelection] = React.useState({})
+
 
   const table = useReactTable({
     data,
@@ -47,6 +48,10 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+  
+  React.useEffect(() => {
+  getSelected(Object.keys(rowSelection).map((key) => table.getRowModel().rows[key]))
+  }, [rowSelection])
 
   return (
     <div>

@@ -1,6 +1,6 @@
 "use client"
 import { Layout } from "@/app/components/dash_lay"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button"
 import Icon from '@mdi/react';
 import { mdiDeleteOutline, mdiChevronUp, mdiFolderMoveOutline, mdiHomeOutline, mdiPencilOutline, mdiReload, mdiCloudDownloadOutline, mdiCloudUploadOutline, mdiContentCopy } from '@mdi/js';
@@ -70,13 +70,15 @@ export default function Home() {
         } else {
             // open the file? or download it?
         }
+    }
 
+    const deleteSelected = async () => {
+        console.log(selected)
     }
 
     return (
             <Layout>
             <h1>Files</h1>
-
 
             <div className="flex mb-2">
             <div className="flex">
@@ -92,23 +94,17 @@ export default function Home() {
 
             <div className="w-full">
                 <div className="text-right">
-                <Button variant="ghost"><Icon path={mdiCloudDownloadOutline} size={1} /></Button>
+                <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiCloudDownloadOutline} size={1} /></Button>
                 <Button variant="ghost"><Icon path={mdiCloudUploadOutline} size={1} /></Button>
-                <Button variant="ghost"><Icon path={mdiPencilOutline} size={1} /></Button>
-                <Button variant="ghost"><Icon path={mdiFolderMoveOutline} size={1} /></Button>
-                <Button variant="ghost"><Icon path={mdiContentCopy} size={1} /></Button>
-                <Button variant="ghost"><Icon path={mdiDeleteOutline} size={1} /></Button>
+                <Button variant="ghost" disabled={selected.length != 1}><Icon path={mdiPencilOutline} size={1} /></Button>
+                <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiFolderMoveOutline} size={1} /></Button>
+                <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiContentCopy} size={1} /></Button>
+                <Button variant="ghost" disabled={selected.length == 0} onClick={deleteSelected}><Icon path={mdiDeleteOutline} size={1} /></Button>
                 </div>
             </div>
             </div>
 
-            { selected.map((file) => (
-                <div key={file.name}>
-                { file.name }
-                </div>
-            )) }
-
-            <DataTable setSelection={setSelected} cellClick={handleClick} columns={columns} data={data} />
+            <DataTable getSelected={setSelected} cellClick={handleClick} columns={columns} data={data} />
 
             </Layout>
         )
