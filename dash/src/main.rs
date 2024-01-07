@@ -9,6 +9,7 @@ use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 use dotenv::dotenv;
 use actix_cors::Cors;
+use serde::Deserialize;
 
 mod files;
 mod tokencheck;
@@ -211,6 +212,27 @@ async fn is_running() -> HttpResponse {
     HttpResponse::Ok().json(is_running)
 }
 
+
+async fn switch_running() -> HttpResponse {
+    let is_running = unsafe { IS_RUNNING };
+    if is_running {
+        cmd_handler("stop".to_string());
+    } else {
+        cmd_handler("start".to_string());
+    }
+    HttpResponse::Ok().json(!is_running)
+}
+
+#[derive(Deserialize)]
+struct CMD {
+    cmd: String,
+}
+
+async fn execute_command(cmd: web::Json<CMD>) -> HttpResponse {
+    cmd_handler(cmd.cmd.clone());
+    HttpResponse::Ok().json("ok")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -248,6 +270,8 @@ async fn main() -> std::io::Result<()> {
         .service(scope("/api")
         .wrap(tokencheck::TokenCheck)
         .route("/is_running", web::post().to(is_running))
+        .route("/switch_running", web::post().to(switch_running))
+        .route("/execute_command", web::post().to(execute_command))
         .service(files::get_files)
         .service(files::delete_files)
     )}).bind(("127.0.0.1", port))?.run();
