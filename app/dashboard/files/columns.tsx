@@ -76,13 +76,15 @@ export const columns: ColumnDef<File>[] = [
     accessorKey: "modified",
     header: ({ column }) => {
       return (
+        <div className="text-right">
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Modified x ago
+          Modified
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+        </div>
       )
     },
     cell: ({ row }) => {
@@ -110,7 +112,7 @@ export const columns: ColumnDef<File>[] = [
         formatted = `${formatted}s`
       }
 
-      return <div className="text-right font-medium">{formatted} ago</div>
+      return <div className="font-medium text-right pr-6">{formatted} ago</div>
     },
   },
 ]
