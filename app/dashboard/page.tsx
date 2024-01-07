@@ -2,11 +2,12 @@
 import { Button } from "@/components/ui/button"
 import { Layout } from "@/app/components/dash_lay"
 import { toast } from "sonner"
+import { Toaster } from 'sonner'
 
 import React, { useState, useEffect } from 'react'
 
 import Icon from '@mdi/react';
-import { mdiSquareOutline, mdiTriangleOutline, mdiWeatherNight, mdiWeatherSunny, mdiWeatherSunset, mdiWeatherPouring, mdiWeatherLightningRainy } from '@mdi/js';
+import { mdiSquareOutline, mdiTriangleOutline, mdiWeatherNight, mdiCircleMedium, mdiWeatherSunny, mdiWeatherSunset, mdiWeatherPouring, mdiWeatherLightningRainy } from '@mdi/js';
 
 async function get_is_running(): Promise<boolean> {
     const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_running', {
@@ -79,7 +80,7 @@ export default function Home() {
             
             <Button variant="secondary" onClick={switch_running_handler} className={`float-right w-36 ${fetched_running ? `${is_running ? 'bg-red-500 hover:bg-red-400' : 'bg-green-500 hover:bg-green-400'}` : ''}`}><Icon path={is_running ? mdiSquareOutline : mdiTriangleOutline} size={0.7} className="mr-3" rotate={is_running ? 0 : 90} /> { fetched_running ? `${ is_running ? 'Stop' : 'Start' }` : 'Loading ...' }</Button>
 
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-3 pt-8">
                 <div>
                     <div>
                         <h2>Quick Commands</h2>
@@ -98,12 +99,26 @@ export default function Home() {
                 <div className="col-span-2">
                     <div>
                         <h2>Players</h2>
+
+                        <span className="flex"><Icon path={mdiCircleMedium} size={1} className="mr-3 text-green-600" /> {-1} / {-1} Players are online</span>
+
+                        <ul>
+                            <Button variant="secondary" className="w-full">
+                                <div className="flex justify-start w-full">
+                                    <p className="w-36 mx-1 border-r">MR12345</p>
+                                    <p className="w-38 mx-1">Gamemode Select</p>
+                                    <p>Welt</p>
+                                    <p>Actions Buttons</p>
+                                </div>
+                            </Button>
+                        </ul>
                         x / y online greendot
                         Liste von ein paar
                     </div>
                 </div>
             </div>
 
+            <Toaster />
 
             </Layout>
         )
