@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import Icon from '@mdi/react';
 import { mdiDeleteOutline, mdiChevronUp, mdiFolderMoveOutline, mdiHomeOutline, mdiPencilOutline, mdiReload, mdiCloudDownloadOutline, mdiCloudUploadOutline, mdiContentCopy } from '@mdi/js';
 
-import { File, columns } from "@/app/dashboard/files/columns"
+import { File, getColumns } from "@/app/dashboard/files/columns"
 import { DataTable } from "@/app/dashboard/files/data-table"
 
 async function getData(path: string): Promise<File[]> {
@@ -35,26 +35,57 @@ async function deleteFile(path: string) {
     return res
 }
 
-
-
+async function renameFile(oldName: string, newName: string) {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/rename/' + oldName + "/" + newName, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+    })
+}
 
 export default function Home() {
     const [data, setData] = useState<File[]>([])
     const [path, setPath] = useState("&.")
     const [selected, setSelected] = useState<File[]>([])
+    const [columns, setColumns] = useState<any[]>([])
     
     const refresh = async () => {
         const res = await getData(path)
         setData(res)
     }
     
+    const saveNewFileName = async (newName: string) => {
+        newName = newName.replaceAll("/", "&")
+        newName = newName.replaceAll(".", "&.")
+        newName = path + "&" + newName
+        newName = newName.replace("\n", "")
+        let oldName = selected[0].getValue("name")
+        oldName.replaceAll("/", "&")
+        oldName.replaceAll(".", "&.")
+        oldName = path + "&" + oldName
+        
+        renameFile(oldName, newName)
+
+        setColumns(getColumns(-1, saveNewFileName))
+        
+        setSelected([])
+
+        setTimeout(async () => {
+            const res = await getData(path)
+            setData(res)
+        }, 20)
+    }
+
     useEffect(() => {
+        setColumns(getColumns(-1, saveNewFileName))
         refresh()
     }, [])
     
     const goToHome = async () => {
         setPath("&.")
         const res = await getData("&.")
+        setColumns(getColumns(-1, saveNewFileName))
         setData(res)
     }
     
@@ -64,6 +95,7 @@ export default function Home() {
         const newPath = pathArr.join("&")
         setPath(newPath)
         const res = await getData(newPath)
+        setColumns(getColumns(-1, saveNewFileName))
         setData(res)
     }
     
@@ -78,6 +110,7 @@ export default function Home() {
             // go in the directory
             setPath(path + "&" + cell.getContext().row.original.name)
             const res = await getData(path + "&" + cell.getContext().row.original.name)
+            setColumns(getColumns(-1, saveNewFileName))
             setData(res)
         } else {
             // open the file? or download it?
@@ -111,6 +144,12 @@ export default function Home() {
         setSelected([])
         refresh()
     }
+
+    const renameSelected = async () => {
+        let row_index = selected[0].id
+        setColumns(getColumns(row_index, saveNewFileName))
+        refresh()
+    }
     
     const addToFileUpload = async (e: any) => {
         e.preventDefault();
@@ -138,6 +177,7 @@ export default function Home() {
         e.stopPropagation();
         e.preventDefault();
     }
+
     
     return (
         <Layout>
@@ -166,7 +206,7 @@ export default function Home() {
         </Button>
         <input className="hidden" id="fileUpload" type="file" multiple onChange={uploadFiles} />
         
-        <Button variant="ghost" disabled={selected.length != 1}><Icon path={mdiPencilOutline} size={1} /></Button>
+        <Button variant="ghost" disabled={selected.length != 1} onClick={renameSelected}><Icon path={mdiPencilOutline} size={1} /></Button>
         <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiFolderMoveOutline} size={1} /></Button>
         <Button variant="ghost" disabled={selected.length == 0}><Icon path={mdiContentCopy} size={1} /></Button>
         <Button variant="ghost" disabled={selected.length == 0} onClick={deleteSelected}><Icon path={mdiDeleteOutline} size={1} /></Button>

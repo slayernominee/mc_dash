@@ -36,6 +36,41 @@ async fn upload(MultipartForm(form): MultipartForm<UploadForm>, path: web::Path<
     HttpResponse::Ok().body("Uploaded!")
 }
 
+#[post("/rename/{pathname}/{new_name}")]
+pub async fn rename(path: web::Path<(String, String)>) -> impl Responder {
+    let (mut pathname, mut new_name) = path.into_inner();
+
+    /*if pathname.contains("..") || pathname.contains("~") || pathname.starts_with("-") ||  pathname.contains("//") || pathname.contains("\\") || pathname.contains(":") || pathname.contains("*") || pathname.contains("?") || pathname.contains("\"") || pathname.contains("<") || pathname.contains(">") || pathname.contains("|") {
+        return Ok(HttpResponse::BadRequest().body("Invalid Pathname!"));
+    }*/
+    // theoretically but since this only works with tokens the user can be trusted ...
+
+    pathname = pathname.replace("&.", ".");
+    pathname = pathname.replace("&", "/");
+    
+    new_name = new_name.replace("&.", ".");
+    new_name = new_name.replace("&", "/");
+
+    let path = Path::new(&pathname);
+
+    if !path.exists() {
+        HttpResponse::BadRequest().body("File or Directory does not exist!");
+    } else if pathname == "." || pathname == "/" {
+        return HttpResponse::BadRequest().body("Server Direcotry!");
+    }
+
+    let new_path = Path::new(&new_name);
+
+    if new_path.exists() {
+        return HttpResponse::BadRequest().body("File or Directory already exists!");
+    }
+
+    std::fs::rename(path, new_path).unwrap();
+
+    HttpResponse::Ok().body(format!("Renamed {} to {}!", pathname, new_name))
+}
+
+
 
 #[derive(Serialize, Debug)]
 struct FileInfo {

@@ -259,8 +259,11 @@ async fn main() -> std::io::Result<()> {
         
         App::new()
         .wrap(cors)
+
+        // websocket
         .route("/ws/", web::get().to(index))
         
+        // api routes
         .service(scope("/api")
         .wrap(tokencheck::TokenCheck)
         .route("/is_running", web::post().to(is_running))
@@ -268,6 +271,7 @@ async fn main() -> std::io::Result<()> {
         .route("/execute_command", web::post().to(execute_command))
         .service(files::get_files)
         .service(files::upload)
+        .service(files::rename)
         .service(files::delete_files)
     )}).bind(("127.0.0.1", port))?.run();
     
