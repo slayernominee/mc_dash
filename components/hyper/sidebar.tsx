@@ -145,7 +145,7 @@ export default function Sidebar() {
         
         <li>
         <Link
-        href=""
+        href="/dashboard/advanced/?"
         className={`group relative flex justify-center rounded px-2 py-1.5 ${pathname.startsWith("/dashboard/advanced/") ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"}`}
         >
         <svg

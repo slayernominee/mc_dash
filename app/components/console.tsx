@@ -3,6 +3,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Button } from '@/components/ui/button'
 
+async function get_is_running(): Promise<boolean> {
+    const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_running', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        },
+    }).then(resp => resp.json())
+    return data
+}
+
 export default function Console() {
 
     var Convert = require('ansi-to-html');
@@ -16,10 +26,16 @@ export default function Console() {
 
     const [socketUrl] = useState(WS_URL);
     const [messageHistory, setMessageHistory] = useState([]);
+    const [running, setRunning] = useState(true)
 
     const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
     
     useEffect(() => {
+
+        get_is_running().then((data) => {
+            setRunning(data)
+        })
+
         if (lastMessage !== null) {
             setMessageHistory((prev) => prev.concat(lastMessage));
         } else if (!already_sent_one.current) {
@@ -52,6 +68,11 @@ export default function Console() {
 
     return (
         <div className="bg-gray-900 text-gray-100 w-full relative h-[39rem] rounded-sm border-white border pt-3">
+            { running ? null : <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+                <Button className='border' onClick={() => {sendMessage('start'); setRunning(true)}}>
+                    Start the Server
+                </Button>
+            </div> }
         <div className="px-4 overflow-y-scroll break-words h-[35rem] flex flex-col-reverse">
             <div className="h-[35rem]"></div>
         {messageHistory.toReversed().map((message, idx) => (
