@@ -267,6 +267,7 @@ async fn main() -> std::io::Result<()> {
         .route("/switch_running", web::post().to(switch_running))
         .route("/execute_command", web::post().to(execute_command))
         .service(files::get_files)
+        .service(files::upload)
         .service(files::delete_files)
     )}).bind(("127.0.0.1", port))?.run();
     

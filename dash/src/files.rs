@@ -2,6 +2,39 @@ use std::{fs::File, io::Read};
 use actix_web::{web, HttpResponse, Responder, Result, post, delete};
 use std::path::Path;
 use serde::Serialize;
+use actix_multipart::form::{
+    tempfile::TempFile,
+    MultipartForm,
+};
+
+#[derive(Debug, MultipartForm)]
+struct UploadForm {
+    #[multipart(rename = "file")]
+    files: Vec<TempFile>,
+}
+
+#[post("/upload/{pathname}")]
+async fn upload(MultipartForm(form): MultipartForm<UploadForm>, path: web::Path<String>) -> impl Responder {
+    let mut pathname = path.into_inner();
+
+    /*if pathname.contains("..") || pathname.contains("~") || pathname.starts_with("-") ||  pathname.contains("//") || pathname.contains("\\") || pathname.contains(":") || pathname.contains("*") || pathname.contains("?") || pathname.contains("\"") || pathname.contains("<") || pathname.contains(">") || pathname.contains("|") {
+        return Ok(HttpResponse::BadRequest().body("Invalid Pathname!"));
+    }*/
+
+    pathname = pathname.replace("&.", ".");
+    pathname = pathname.replace("&", "/");
+
+    for f in form.files {
+        let file_name = f.file_name.unwrap();
+        let path = format!("{}/{}", pathname, file_name); 
+        
+        f.file.persist(path).unwrap(); // <-- other mounts .... trying to save the file not in the working directory somewhere else ...
+    }
+    
+    //println!("ids: {:?}", ids);
+    
+    HttpResponse::Ok().body("Uploaded!")
+}
 
 
 #[derive(Serialize, Debug)]
