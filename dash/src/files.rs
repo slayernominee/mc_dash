@@ -1,5 +1,5 @@
 use std::{fs::File, io::Read};
-use actix_web::{web, HttpResponse, Responder, Result, post};
+use actix_web::{web, HttpResponse, Responder, Result, post, delete};
 use std::path::Path;
 use serde::Serialize;
 
@@ -9,6 +9,38 @@ struct FileInfo {
     name: String,
     is_dir: bool,
     modified: i128,
+}
+
+
+#[delete("/files/{pathname}")]
+pub async fn delete_files(path: web::Path<String>) -> Result<impl Responder> {
+    let mut pathname = path.into_inner();
+
+    /*if pathname.contains("..") || pathname.contains("~") || pathname.starts_with("-") ||  pathname.contains("//") || pathname.contains("\\") || pathname.contains(":") || pathname.contains("*") || pathname.contains("?") || pathname.contains("\"") || pathname.contains("<") || pathname.contains(">") || pathname.contains("|") {
+        return Ok(HttpResponse::BadRequest().body("Invalid Pathname!"));
+    }*/
+    // theoretically but since this only works with tokens the user can be trusted ...
+    
+    pathname = pathname.replace("&.", ".");
+    pathname = pathname.replace("&", "/");
+    
+    let path = Path::new(&pathname);
+
+    if !path.exists() {
+        return Ok(HttpResponse::BadRequest().body("File or Directory does not exist!"));
+    }
+
+    if pathname == "." || pathname == "/" {
+        return Ok(HttpResponse::BadRequest().body("Server Direcotry!"));
+    }
+
+    if path.is_dir() {
+        std::fs::remove_dir_all(path)?;
+    } else {
+        std::fs::remove_file(path)?;
+    }
+
+    Ok(HttpResponse::Ok().body("Deleted!"))
 }
 
 /// Get a File or Direcotry

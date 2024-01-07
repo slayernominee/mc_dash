@@ -25,6 +25,16 @@ async function getData(path: string): Promise<File[]> {
     return res
 }
 
+async function deleteFile(path: string) {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/files/' + path, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+        })
+    return res
+}
+
 
 export default function Home() {
     const [data, setData] = useState<File[]>([])
@@ -73,7 +83,11 @@ export default function Home() {
     }
 
     const deleteSelected = async () => {
-        console.log(selected)
+        const res = await Promise.all(selected.map((file) => deleteFile(path + "&" + file.getValue("name"))))
+        const res2 = await getData(path)
+        setData(res2)
+        setSelected([])
+        refresh()
     }
 
     return (

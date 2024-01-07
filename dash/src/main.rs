@@ -217,7 +217,7 @@ fn cmd_handler(mut cmd: String) {
         let server = HttpServer::new(|| {
             let cors = Cors::default()
               .allowed_origin("http://localhost:3000")
-              .allowed_methods(vec!["GET", "POST"])
+              .allowed_methods(vec!["GET", "POST", "DELETE"])
               .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
               .allowed_header(http::header::CONTENT_TYPE)
               .max_age(3600);
@@ -229,6 +229,7 @@ fn cmd_handler(mut cmd: String) {
             .service(scope("/api")
                 .wrap(tokencheck::TokenCheck)
                 .service(files::get_files)
+                .service(files::delete_files)
             )
         }
         ).bind(("127.0.0.1", port))?.run();
