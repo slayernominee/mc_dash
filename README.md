@@ -26,15 +26,18 @@ Visit the `.env` file and change the token, websocket port there
 pnpm install
 pnpm run dev
 ```
-
 will run the frontend on http://localhost:3000/dashboard
 
 ```sh
 cd dash
 cargo run
 ```
+will run the Websocket / API server
 
-Will run the Websocket / API server
+
+Download the current paper server
+and upload it in the file explorer as `server.jar` 
+also upload a `eula.txt` with the content `eula=true` up
 
 
 ## Deployment
