@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Layout } from "@/app/components/dash_lay"
+import { toast } from "sonner"
 
 import React, { useState, useEffect } from 'react'
 
@@ -58,10 +59,12 @@ export default function Home() {
         })
 
         if (is_running) {
+            toast('Server is stopping ...')
             setTimeout(() => {
                 set_fetched_running(true)
             }, 2000)
         } else {
+            toast('Server is starting ...')
             setTimeout(() => {
                 set_fetched_running(true)
             }, 7000)
@@ -81,14 +84,14 @@ export default function Home() {
                     <div>
                         <h2>Quick Commands</h2>
                         <div className="grid grid-cols-3 pr-6 gap-4 mb-4">
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set day')} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Day</Button>
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set sunrise')} variant="secondary"><Icon path={mdiWeatherSunset} size={0.7} className="mr-1" />Sunrise</Button>
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set midnight')} variant="secondary"><Icon path={mdiWeatherNight} size={0.7} className="mr-1" />Night</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('time set day'); toast("It's now day")}} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Day</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('time set sunrise'); toast("It's now dusk")}} variant="secondary"><Icon path={mdiWeatherSunset} size={0.7} className="mr-1" />Sunrise</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('time set midnight'); toast("It's now night")}} variant="secondary"><Icon path={mdiWeatherNight} size={0.7} className="mr-1" />Night</Button>
                         </div>
                         <div className="grid grid-cols-3 pr-6 gap-4 mt-4">
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather clear')} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Clear</Button>
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather rain')} variant="secondary"><Icon path={mdiWeatherPouring} size={0.7} className="mr-1" />Rain</Button>
-                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather thunder')} variant="secondary"><Icon path={mdiWeatherLightningRainy} size={0.7} className="mr-1" />Storm</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('weather clear'); toast("It's now a sunny day")}} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Clear</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('weather rain'); toast("It's now raining")}} variant="secondary"><Icon path={mdiWeatherPouring} size={0.7} className="mr-1" />Rain</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => {await exec_cmd('weather thunder'); toast("It's now storming")}} variant="secondary"><Icon path={mdiWeatherLightningRainy} size={0.7} className="mr-1" />Storm</Button>
                         </div>
                     </div>
                 </div>
