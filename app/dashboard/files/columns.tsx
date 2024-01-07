@@ -92,19 +92,19 @@ export const columns: ColumnDef<File>[] = [
 
       let formatted: number | string = 0
  
-      if (modified > 365 * 24 * 60 * 60 * 1000) { // 365d
+      if (modified >= 365 * 24 * 60 * 60 * 1000) { // 365d
         formatted = Math.round(modified / 1000 / 60 / 60 / 24 / 365)
         formatted = `${formatted}y`
-      } else if (modified > 7 * 24 * 60 * 60 * 1000) { // 365d
+      } else if (modified >= 7 * 24 * 60 * 60 * 1000) { // 365d
         formatted = Math.round(modified / 1000 / 60 / 60 / 24 / 7)
         formatted = `${formatted}w`
-      } else if (modified > 24 * 60 * 60 * 1000) { // 24h
+      } else if (modified >= 24 * 60 * 60 * 1000) { // 24h
         formatted = Math.round(modified / 1000 / 60 / 60 / 24)
         formatted = `${formatted}d`
-      } else if (modified > 60 * 60 * 1000) { // 60min
+      } else if (modified >= 60 * 60 * 1000) { // 60min
         formatted = Math.round(modified / 1000 / 60 / 60)
         formatted = `${formatted}h`
-      } else if (modified > 60 * 1000) { // 60s
+      } else if (modified >= 60 * 1000) { // 60s
         formatted = Math.round(modified / 1000 / 60)
         formatted = `${formatted}m`
       } else {
