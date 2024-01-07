@@ -1,4 +1,13 @@
 # MC Dash
+
+# IN DEVELOPMENT! THE CURRENT VERSION IS NOT FUNCTIONAL! AND IT STILL NEEDS SOME FUNCTIONS!
+- [x] process console
+- [x] file explorer (needs still some improvements)
+- [ ] file editor
+- [ ] download auto the minecraft server
+- [ ] auto start the server (is currently only possible via the console with `start` / `stop`)
+- [ ] start / stop the server
+
 A free & opensource Minecraft Dashboard to control your server
 
 ![console image](.github/assets/console.webp)

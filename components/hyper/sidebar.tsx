@@ -287,7 +287,7 @@ export default function Sidebar() {
         </li>
         
         <li>
-        <details className="group [&_summary::-webkit-details-marker]:hidden">
+        <details className="group [&_summary::-webkit-details-marker]:hidden" open={pathname.startsWith("/dashboard/advanced")}>
         <summary
         className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
         >
@@ -311,33 +311,33 @@ export default function Sidebar() {
         
         <ul className="mt-2 space-y-1 px-4">
         <li>
-        <a
+        <Link
         href=""
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/advanced/?'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
         Details
-        </a>
+        </Link>
         </li>
         
         <li>
-        <a
+        <Link
         href=""
-        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/advanced/?'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
         >
-        Security
-        </a>
+        -
+        </Link>
+        </li>       
+
+        <li>
+        <Link
+        href="/dashboard/advanced/about"
+        className={`block rounded-lg px-4 py-2 text-sm font-medium ${pathname === '/dashboard/advanced/about'  ? "bg-gray-100 text-gray-700" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}
+        >
+        About
+        </Link>
         </li>
         
-        <li>
-        <form action="/logout">
-        <button
-        type="submit"
-        className="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700"
-        >
-        Logout
-        </button>
-        </form>
-        </li>
+
         </ul>
         </details>
         </li>

@@ -79,3 +79,6 @@
 h1 {
   @apply text-4xl font-medium text-center mb-4;
 }
+h2 {
+  @apply text-xl font-medium mb-2;
+}
