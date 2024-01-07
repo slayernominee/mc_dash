@@ -11,6 +11,7 @@
 A free & opensource Minecraft Dashboard to control your server
 
 ![console image](.github/assets/console.webp)
+![files image](.github/assets/files.webp)
 
 
 ## Development
