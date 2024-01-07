@@ -5,7 +5,7 @@ import { Layout } from "@/app/components/dash_lay"
 import React, { useState, useEffect } from 'react'
 
 import Icon from '@mdi/react';
-import { mdiSquareOutline, mdiTriangleOutline } from '@mdi/js';
+import { mdiSquareOutline, mdiTriangleOutline, mdiWeatherNight, mdiWeatherSunny, mdiWeatherSunset, mdiWeatherPouring, mdiWeatherLightningRainy } from '@mdi/js';
 
 async function get_is_running(): Promise<boolean> {
     const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_running', {
@@ -27,6 +27,18 @@ async function switch_running(): Promise<boolean> {
     return data
 }
 
+async function exec_cmd(command: string) {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/execute_command', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+        body: command
+    }).catch((err) => {
+        console.error(err)
+    })
+}
+
 export default function Home() {
 
     const [is_running, set_is_running] = useState(false)
@@ -40,9 +52,22 @@ export default function Home() {
     }, [])
 
     const switch_running_handler = () => {
+        set_fetched_running(false)
         switch_running().then((is_running) => {
             set_is_running(is_running)
         })
+
+        if (is_running) {
+            setTimeout(() => {
+                set_fetched_running(true)
+            }, 2000)
+        } else {
+            setTimeout(() => {
+                set_fetched_running(true)
+            }, 7000)
+        }
+
+        
     }
 
     return (
@@ -55,9 +80,16 @@ export default function Home() {
                 <div>
                     <div>
                         <h2>Quick Commands</h2>
-                        <Button variant="secondary">Day</Button>
-                        <Button variant="secondary">Night</Button>
-                        <Button>Clear Weather</Button>
+                        <div className="grid grid-cols-3 pr-6 gap-4 mb-4">
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set day')} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Day</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set sunrise')} variant="secondary"><Icon path={mdiWeatherSunset} size={0.7} className="mr-1" />Sunrise</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('time set midnight')} variant="secondary"><Icon path={mdiWeatherNight} size={0.7} className="mr-1" />Night</Button>
+                        </div>
+                        <div className="grid grid-cols-3 pr-6 gap-4 mt-4">
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather clear')} variant="secondary"><Icon path={mdiWeatherSunny} size={0.7} className="mr-1" />Clear</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather rain')} variant="secondary"><Icon path={mdiWeatherPouring} size={0.7} className="mr-1" />Rain</Button>
+                        <Button disabled={!is_running || !fetched_running} className="w-full" onClick={async () => await exec_cmd('weather thunder')} variant="secondary"><Icon path={mdiWeatherLightningRainy} size={0.7} className="mr-1" />Storm</Button>
+                        </div>
                     </div>
                 </div>
                 <div className="col-span-2">

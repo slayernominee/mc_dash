@@ -9,7 +9,6 @@ use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 use dotenv::dotenv;
 use actix_cors::Cors;
-use serde::Deserialize;
 
 mod files;
 mod tokencheck;
@@ -223,13 +222,8 @@ async fn switch_running() -> HttpResponse {
     HttpResponse::Ok().json(!is_running)
 }
 
-#[derive(Deserialize)]
-struct CMD {
-    cmd: String,
-}
-
-async fn execute_command(cmd: web::Json<CMD>) -> HttpResponse {
-    cmd_handler(cmd.cmd.clone());
+async fn execute_command(cmd: String) -> HttpResponse {
+    cmd_handler(cmd);
     HttpResponse::Ok().json("ok")
 }
 
