@@ -16,11 +16,19 @@ A free & opensource Minecraft Dashboard to control your server
 ![files image](.github/assets/files.webp)
 
 
-## Development
+## Prerequirements
+- Java JRE (for minecraft)
+- git
 
+
+## Development
 add a folder called `server` and put the `paper.jar` file in it that will run the server
 add a eula file that has`eula=true` in it ...
 Visit the `.env` file and change the token, websocket port there
+
+- cargo
+- node
+
 
 ```sh
 pnpm install

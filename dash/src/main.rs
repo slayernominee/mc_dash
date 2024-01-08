@@ -12,6 +12,7 @@ use actix_cors::Cors;
 
 mod files;
 mod tokencheck;
+mod mc;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(10);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(600); // 10min
@@ -273,6 +274,10 @@ async fn main() -> std::io::Result<()> {
         .service(files::upload)
         .service(files::rename)
         .service(files::delete_files)
+
+        .service(mc::is_setup)
+        .service(mc::download_server)
+        .service(mc::run_once)
     )}).bind(("127.0.0.1", port))?.run();
     
     // Await the httpserver process

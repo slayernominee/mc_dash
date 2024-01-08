@@ -41,12 +41,29 @@ async function exec_cmd(command: string) {
     })
 }
 
+async function check_if_setup() {
+    const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_setup', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+    }).then((res) => res.json())
+    return data
+}
+
 export default function Home() {
 
     const [is_running, set_is_running] = useState(false)
     const [fetched_running, set_fetched_running] = useState(false)
 
     useEffect(() => {
+
+        check_if_setup().then((is_setup) => {
+            if (!is_setup) {
+                window.location.href = '/setup'
+            }
+        })
+
         get_is_running().then((is_running) => {
             set_is_running(is_running)
             set_fetched_running(true)
