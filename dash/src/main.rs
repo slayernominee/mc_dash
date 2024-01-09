@@ -278,6 +278,7 @@ async fn main() -> std::io::Result<()> {
         .service(mc::is_setup)
         .service(mc::download_server)
         .service(mc::run_once)
+        .service(mc::agree_to_eula)
     )}).bind(("127.0.0.1", port))?.run();
     
     // Await the httpserver process

@@ -3,12 +3,29 @@ import React, { useRef } from 'react';
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
+async function check_if_setup() {
+    const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_setup', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+    }).then((res) => res.json())
+    return data
+}
+
 export default function Home() {
     const tokenInput = useRef(null)
 
     const setToken = async () => {
         localStorage.setItem("token", tokenInput.current.value)
-        window.location.href = '/dashboard/'
+
+        check_if_setup().then((is_setup) => {
+            if (!is_setup) {
+                window.location.href = '/setup'
+            } else {
+                window.location.href = '/dashboard'
+            }
+        })
     }
     
     return (

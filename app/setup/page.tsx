@@ -8,6 +8,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import React, { useEffect, useState } from 'react'
+import { Checkbox } from '@/components/ui/checkbox'
 
 async function check_if_setup() {
     const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_setup', {
@@ -46,6 +47,27 @@ async function run_once() {
     return data
 }
 
+async function get_eula() {
+    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/files/eula&.txt`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer '+ localStorage.getItem('token')
+        }
+    })
+    const text = await data.text()
+    return text
+}
+
+async function agree_to_eula() {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agree_to_eula`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer '+ localStorage.getItem('token')
+        }
+    })
+
+}
+
 export default function SetupPage() {
 
     const [step, setStep] = useState(0)
@@ -54,6 +76,9 @@ export default function SetupPage() {
 
     const [selectedServer, setSelectedServer] = useState('')
     const [selectedVersion, setSelectedVersion] = useState('')
+    const [eulaContent, setEulaContent] = useState('loading eula.txt ...')
+    const [eulaAgreement, setEulaAgreement] = useState(false)
+
 
     async function get_paper_download_link() {
         const data = await fetch(`https://papermc.io/api/v2/projects/paper/versions/${selectedVersion}/builds`, {
@@ -104,16 +129,28 @@ export default function SetupPage() {
             get_paper_download_link().then((data) => {
                 data = data.replaceAll("/", "&")
                 donwload_server_cmd(data).then((res) => {
-                    console.log(res)
                     setStep(3)
                     run_once().then((res) => {
-                       setStep(4)
+                        get_eula().then((text) => {
+                            setEulaContent(text)
+                            setStep(4)
+                        })
                     })
                 })
             })
         } else {
             // custom version listing
         }
+    }
+
+    const finishSetup = () => {
+        if (!eulaAgreement ) {
+            return
+        }
+
+        agree_to_eula().then((res) => {
+            window.location.href = '/dashboard'
+        })
     }
 
     return (
@@ -159,11 +196,21 @@ export default function SetupPage() {
         </div>
 
         <div className={step == 3 ? '' : 'hidden'}>
-            <span>Running it for the first time to create the necessary files</span>
+            <span>Running the Server for the first time to create the neccesarry files</span>
         </div>
 
         <div className={step == 4 ? '' : 'hidden'}>
-            here should be the agree to the eula shit ...
+            <p>This is the content of the eula.txt</p>
+
+            <div className='mt-4 text-left py-2 px-6 rounded-lg bg-slate-200'>
+                { eulaContent.split('\n').map((line, idx) => (
+                    <p key={idx}>{line}</p>
+                ))}
+            </div>
+
+            <Checkbox className='mt-4 mr-2' onCheckedChange={(v: boolean) => setEulaAgreement(v)} /><span>I agree to the eula.txt</span>
+            <br />
+            <Button className='mt-8' disabled={!eulaAgreement} onClick={finishSetup}>Finish</Button>
         </div>
 
 

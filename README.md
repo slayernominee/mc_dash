@@ -4,8 +4,8 @@
 - [x] process console
 - [x] file explorer (needs still some improvements)
 - [x] start / stop the server
+- [x] download auto the minecraft server
 - [ ] file editor
-- [ ] download auto the minecraft server
 - [ ] server setup process (where you can select the server, accept the eula and auto start it)
 - [ ] backend modifiable cors
 - [ ] bash script to generate a random token, port etc ...
