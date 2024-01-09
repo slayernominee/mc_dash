@@ -3,6 +3,7 @@ A free & opensource Minecraft Dashboard to control your server
 
 ![console image](.github/assets/console.webp)
 ![files image](.github/assets/files.webp)
+![dashboard image](.github/assets/dashboard.webp)
 
 ## Features
 - [x] Live Console
@@ -20,8 +21,7 @@ A free & opensource Minecraft Dashboard to control your server
 - [ ] Backend Modifiable Cors
 - [ ] File Editor
 - [ ] Explorer Feature: Duplicate, Download, Move
-
-
+- [ ] Dashboard: Kick, Ban, Get World, Get Gamemode, Change Gamemode, List Players
 
 
 # Setup

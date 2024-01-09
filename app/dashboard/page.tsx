@@ -11,10 +11,27 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+  import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
+  
+
 import React, { useState, useEffect } from 'react'
 
 import Icon from '@mdi/react';
-import { mdiSquareOutline, mdiTriangleOutline, mdiWeatherNight, mdiCircleMedium, mdiWeatherSunny, mdiWeatherSunset, mdiWeatherPouring, mdiWeatherLightningRainy } from '@mdi/js';
+import { mdiSquareOutline, mdiTriangleOutline, mdiLightningBolt, mdiKarate, mdiGavel, mdiWeatherNight, mdiCircleMedium, mdiWeatherSunny, mdiWeatherSunset, mdiWeatherPouring, mdiWeatherLightningRainy } from '@mdi/js';
 
 async function get_is_running(): Promise<boolean> {
     const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/is_running', {
@@ -124,20 +141,84 @@ export default function Home() {
                     <div>
                         <h2>Players</h2>
 
-                        <span className="flex"><Icon path={mdiCircleMedium} size={1} className="mr-3 text-green-600" /> {-1} / {-1} Players are online</span>
+                        <span className="flex"><Icon path={mdiCircleMedium} size={1} className="mr-3 text-green-600" /> {1} / {20} Players are online</span>
 
-                        <ul>
-                            <Button variant="secondary" className="w-full">
-                                <div className="flex justify-start w-full">
-                                    <p className="w-36 mx-1 border-r">MR12345</p>
-                                    <p className="w-38 mx-1">Gamemode Select</p>
-                                    <p>Welt</p>
-                                    <p>Actions Buttons</p>
-                                </div>
-                            </Button>
-                        </ul>
-                        x / y online greendot
-                        Liste von ein paar
+
+                        <Table>
+                        <TableCaption></TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                            <TableHead className="w-36">Name</TableHead>
+                            <TableHead>Gamemode</TableHead>
+                            <TableHead>World</TableHead>
+                            <TableHead className="text-center">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                            <TableCell className="font-medium">MR12345</TableCell>
+                            <TableCell>
+                                <Select>
+                                <SelectTrigger className="w-36 border-none outline-none focus:border-none focus:outline-none">
+                                    <SelectValue placeholder="Gamemode" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="survival">Survival</SelectItem>
+                                    <SelectItem value="adventure">Adventure</SelectItem>
+                                    <SelectItem value="spectator">Spectator</SelectItem>
+                                    <SelectItem value="creative">Creative</SelectItem>
+                                </SelectContent>
+                                </Select>
+                            </TableCell>
+                            <TableCell>Nether</TableCell>
+                            <TableCell className="text-center">
+
+                            <TooltipProvider>
+                            <Tooltip>
+                            <TooltipTrigger>
+                                <Button variant="ghost">
+                                    <Icon path={mdiLightningBolt} size={1} className="mr-3" /> 
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                            <p>Hit the player with a lightning bolt</p>
+                            </TooltipContent>
+                            </Tooltip>
+                            </TooltipProvider>
+
+
+                            <TooltipProvider>
+                            <Tooltip>
+                            <TooltipTrigger>
+                                <Button variant="ghost">
+                                    <Icon path={mdiKarate} size={1} className="mr-3" /> 
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                            <p>Kick Player</p>
+                            </TooltipContent>
+                            </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                                <Tooltip>
+                                <TooltipTrigger>
+                                    <Button variant="ghost">
+                                        <Icon path={mdiGavel} size={1} className="mr-3" /> 
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                <p>Ban Player</p>
+                                </TooltipContent>
+                                </Tooltip>
+                                </TooltipProvider>
+
+
+                            </TableCell>
+                            </TableRow>
+                        </TableBody>
+                        </Table>
+
                     </div>
                 </div>
             </div>
