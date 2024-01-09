@@ -75,10 +75,24 @@ async function check_if_setup() {
     return data
 }
 
+async function get_players() {
+    const data = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/list_players', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+    }).then((res) => res.json())
+    return data
+}
+
 export default function Home() {
 
     const [is_running, set_is_running] = useState(false)
     const [fetched_running, set_fetched_running] = useState(false)
+    
+    const [players, setPlayers] = useState([])
+
+    const [max_count, set_max_count] = useState(0)
 
     useEffect(() => {
 
@@ -92,6 +106,24 @@ export default function Home() {
             set_is_running(is_running)
             set_fetched_running(true)
         })
+
+        get_players().then((player_data) => {
+            setPlayers(player_data.players)
+            set_max_count(player_data.max)
+        })
+
+        setInterval(() => {
+            get_is_running().then((is_running) => {
+                set_is_running(is_running)
+                set_fetched_running(true)
+            })
+
+            get_players().then((player_data) => {
+                setPlayers(player_data.players)
+                set_max_count(player_data.max)
+            })
+        }, 5000)
+
     }, [])
 
     const switch_running_handler = () => {
@@ -114,6 +146,70 @@ export default function Home() {
 
         
     }
+
+    const playerList = players.map((player_name, idx) =>
+    <TableRow key={idx}>
+    <TableCell className="font-medium">{ player_name }</TableCell>
+    <TableCell>
+        <Select onValueChange={(v) => exec_cmd(`gamemode ${v} ${player_name}`)}>
+        <SelectTrigger className="w-36 border-none outline-none focus:border-none focus:outline-none">
+            <SelectValue placeholder="Gamemode" />
+        </SelectTrigger>
+        <SelectContent>
+            <SelectItem value="survival">Survival</SelectItem>
+            <SelectItem value="adventure">Adventure</SelectItem>
+            <SelectItem value="spectator">Spectator</SelectItem>
+            <SelectItem value="creative">Creative</SelectItem>
+        </SelectContent>
+        </Select>
+    </TableCell>
+    <TableCell>World</TableCell>
+    <TableCell className="text-center">
+
+    <TooltipProvider>
+    <Tooltip>
+    <TooltipTrigger>
+        <Button variant="ghost" onClick={() => exec_cmd(`execute at ${player_name} run summon lightning_bolt ^ ^ ^`)} >
+            <Icon path={mdiLightningBolt} size={1} className="mr-3" /> 
+        </Button>
+    </TooltipTrigger>
+    <TooltipContent>
+    <p>Hit the player with a lightning bolt</p>
+    </TooltipContent>
+    </Tooltip>
+    </TooltipProvider>
+
+
+    <TooltipProvider>
+    <Tooltip>
+    <TooltipTrigger>
+        <Button variant="ghost" onClick={() => exec_cmd(`kick ${player_name}`)}>
+            <Icon path={mdiKarate} size={1} className="mr-3" /> 
+        </Button>
+    </TooltipTrigger>
+    <TooltipContent>
+    <p>Kick Player</p>
+    </TooltipContent>
+    </Tooltip>
+    </TooltipProvider>
+
+    <TooltipProvider>
+        <Tooltip>
+        <TooltipTrigger>
+            <Button variant="ghost" onClick={() => exec_cmd(`ban ${player_name}`)}>
+                <Icon path={mdiGavel} size={1} className="mr-3" /> 
+            </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+        <p>Ban Player</p>
+        </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+
+
+    </TableCell>
+</TableRow>
+);
 
     return (
             <Layout>
@@ -141,8 +237,7 @@ export default function Home() {
                     <div>
                         <h2>Players</h2>
 
-                        <span className="flex"><Icon path={mdiCircleMedium} size={1} className="mr-3 text-green-600" /> {1} / {20} Players are online</span>
-
+                        <span className="flex"><Icon path={mdiCircleMedium} size={1} className={`mr-3 ${is_running ? 'text-green-600' : 'text-red-500'}`} /> {players.length} / {max_count} Players are online</span>
 
                         <Table>
                         <TableCaption></TableCaption>
@@ -155,67 +250,7 @@ export default function Home() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow>
-                            <TableCell className="font-medium">MR12345</TableCell>
-                            <TableCell>
-                                <Select>
-                                <SelectTrigger className="w-36 border-none outline-none focus:border-none focus:outline-none">
-                                    <SelectValue placeholder="Gamemode" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="survival">Survival</SelectItem>
-                                    <SelectItem value="adventure">Adventure</SelectItem>
-                                    <SelectItem value="spectator">Spectator</SelectItem>
-                                    <SelectItem value="creative">Creative</SelectItem>
-                                </SelectContent>
-                                </Select>
-                            </TableCell>
-                            <TableCell>Nether</TableCell>
-                            <TableCell className="text-center">
-
-                            <TooltipProvider>
-                            <Tooltip>
-                            <TooltipTrigger>
-                                <Button variant="ghost">
-                                    <Icon path={mdiLightningBolt} size={1} className="mr-3" /> 
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                            <p>Hit the player with a lightning bolt</p>
-                            </TooltipContent>
-                            </Tooltip>
-                            </TooltipProvider>
-
-
-                            <TooltipProvider>
-                            <Tooltip>
-                            <TooltipTrigger>
-                                <Button variant="ghost">
-                                    <Icon path={mdiKarate} size={1} className="mr-3" /> 
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                            <p>Kick Player</p>
-                            </TooltipContent>
-                            </Tooltip>
-                            </TooltipProvider>
-
-                            <TooltipProvider>
-                                <Tooltip>
-                                <TooltipTrigger>
-                                    <Button variant="ghost">
-                                        <Icon path={mdiGavel} size={1} className="mr-3" /> 
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                <p>Ban Player</p>
-                                </TooltipContent>
-                                </Tooltip>
-                                </TooltipProvider>
-
-
-                            </TableCell>
-                            </TableRow>
+                            { playerList }
                         </TableBody>
                         </Table>
 

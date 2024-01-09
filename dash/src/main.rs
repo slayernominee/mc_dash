@@ -1,4 +1,5 @@
 use actix_web::web::scope;
+use serde::Serialize;
 use tokio::process::Command;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, BufWriter};
 use actix::{ActorContext, AsyncContext, Message, Handler, Addr, StreamHandler, Actor};
@@ -21,6 +22,7 @@ static mut INP: Option<Arc<Mutex<BufWriter<tokio::process::ChildStdin>>>> = None
 static mut AUTHENTICATED_SOCKETS: Option<Arc<StdMutex<Vec<Addr<MyWs>>>>> = None;
 
 static mut IS_RUNNING: bool = false;
+static mut LAST_PLAYER_LIST_OUTPUT: Option<String> = None;
 
 pub struct BroadcastMessage {
     pub data: String,
@@ -43,7 +45,17 @@ async fn server_process() -> Result<(), Box<dyn std::error::Error>> {
         let mut lines = stdout.lines();
         while let Some(line) = lines.next_line().await.unwrap() {
             println!("{}", line);
-            
+
+            if line.contains("players online") {
+                unsafe {
+                    if let Some(last_output) = &mut LAST_PLAYER_LIST_OUTPUT {
+                        *last_output = line.clone();
+                    } else {
+                        LAST_PLAYER_LIST_OUTPUT = Some(line.clone());
+                    }
+                }
+            }
+ 
             let data = line.to_string();  // Replace with your actual data
             unsafe {
                 if let Some(authenticated_sockets) = &AUTHENTICATED_SOCKETS {
@@ -213,6 +225,63 @@ async fn is_running() -> HttpResponse {
 }
 
 
+#[derive(Debug, Serialize)]
+struct PlayerListing {
+    count: u32,
+    max: u32,
+    players: Vec<String>,
+}
+
+async fn get_players() -> HttpResponse {
+    let is_running = unsafe { IS_RUNNING };
+    if !is_running {
+        let players = PlayerListing {
+            count: 0,
+            max: 0,
+            players: vec![],
+        };
+        return HttpResponse::Ok().json(players);
+    }
+
+    cmd_handler("list".to_string());
+
+    let players: String;
+
+    tokio::time::sleep(Duration::from_millis(100)).await;
+
+    unsafe {
+        if let Some(last_output) = &LAST_PLAYER_LIST_OUTPUT {
+            players = last_output.clone().split("INFO]: There are ").collect::<Vec<&str>>()[1].to_string();
+        } else {
+            let players = PlayerListing {
+                count: 0,
+                max: 0,
+                players: vec![],
+            };
+            return HttpResponse::Ok().json(players);
+        }
+    }
+
+    // "0 of a max of 20 players online: "
+    let count = players.split(" of a max of ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
+    let max = players.split(" of a max of ").collect::<Vec<&str>>()[1].split(" players online:").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
+    let mut players = players.split(" players online: ").collect::<Vec<&str>>()[1].split(", ").map(|s| s.to_string()).collect::<Vec<String>>();
+
+    if players.len() == 1 && players[0] == "" {
+        players = vec![];
+    }
+
+    let players = PlayerListing {
+        count,
+        max,
+        players,
+    };
+
+    println!("{:?}", players);
+
+    HttpResponse::Ok().json(players)
+}
+
 async fn switch_running() -> HttpResponse {
     let is_running = unsafe { IS_RUNNING };
     if is_running {
@@ -267,9 +336,12 @@ async fn main() -> std::io::Result<()> {
         // api routes
         .service(scope("/api")
         .wrap(tokencheck::TokenCheck)
+
         .route("/is_running", web::post().to(is_running))
         .route("/switch_running", web::post().to(switch_running))
         .route("/execute_command", web::post().to(execute_command))
+        .route("/list_players", web::post().to(get_players))
+
         .service(files::get_files)
         .service(files::upload)
         .service(files::rename)

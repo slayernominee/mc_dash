@@ -21,7 +21,7 @@ A free & opensource Minecraft Dashboard to control your server
 - [ ] Backend Modifiable Cors
 - [ ] File Editor
 - [ ] Explorer Feature: Duplicate, Download, Move
-- [ ] Dashboard: Kick, Ban, Get World, Get Gamemode, Change Gamemode, List Players
+- [ ] Dashboard: Get World, Get Gamemode
 
 
 # Setup
