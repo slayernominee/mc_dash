@@ -1,20 +1,30 @@
 # MC Dash
-
-# IN DEVELOPMENT! THE CURRENT VERSION IS NOT FUNCTIONAL! AND IT STILL NEEDS SOME FUNCTIONS!
-- [x] process console
-- [x] file explorer (needs still some improvements)
-- [x] start / stop the server
-- [x] download auto the minecraft server
-- [ ] file editor
-- [ ] server setup process (where you can select the server, accept the eula and auto start it)
-- [ ] backend modifiable cors
-- [ ] bash script to generate a random token, port etc ...
-
 A free & opensource Minecraft Dashboard to control your server
 
 ![console image](.github/assets/console.webp)
 ![files image](.github/assets/files.webp)
 
+## Features
+- [x] Live Console
+        To see console output live and execute commands
+- [x] File Explorer
+        To delete, upload, download, etc files e.g. plugins
+- [x] Dashboard
+        With some general information and quick commands
+- [x] Setup Wizard
+        Here you can select a server and a version and agree to the eula.txt
+
+## TO-DO
+- [ ] Setup Script
+- [ ] Docker Container
+- [ ] Backend Modifiable Cors
+- [ ] File Editor
+- [ ] Explorer Feature: Duplicate, Download, Move
+
+
+
+
+# Setup
 
 ## Prerequirements
 - Java JRE (for minecraft)
