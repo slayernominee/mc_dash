@@ -14,7 +14,7 @@ async function check_if_setup() {
 }
 
 export default function Home() {
-    const tokenInput = useRef(null)
+    const tokenInput: any = useRef(null)
 
     const setToken = async () => {
         localStorage.setItem("token", tokenInput.current.value)

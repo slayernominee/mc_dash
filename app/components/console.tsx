@@ -20,15 +20,15 @@ export default function Console() {
 
     const WS_URL = process.env.NEXT_PUBLIC_WS_URL
 
-    const cmd = useRef(null);
-    const sendMessages = useRef([]);
+    const cmd: any = useRef();
+    const sendMessages: any = useRef([]);
     const already_sent_one = useRef(false)
 
-    const [socketUrl] = useState(WS_URL);
-    const [messageHistory, setMessageHistory] = useState([]);
+    const [socketUrl]: any = useState(WS_URL);
+    const [messageHistory, setMessageHistory]: any = useState([]);
     const [running, setRunning] = useState(true)
 
-    const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+    const { sendMessage, lastMessage, readyState }: any = useWebSocket(socketUrl);
     
     useEffect(() => {
 
@@ -37,7 +37,7 @@ export default function Console() {
         })
 
         if (lastMessage !== null) {
-            setMessageHistory((prev) => prev.concat(lastMessage));
+            setMessageHistory((prev: any) => prev.concat(lastMessage));
         } else if (!already_sent_one.current) {
             if (localStorage.getItem("token") === null) {
                 window.location.href = "/login"
@@ -75,8 +75,8 @@ export default function Console() {
             </div> }
         <div className="px-4 overflow-y-scroll break-words h-[35rem] flex flex-col-reverse">
             <div className="h-[35rem]"></div>
-        {messageHistory.toReversed().map((message, idx) => (
-            <span key={idx} dangerouslySetInnerHTML={message ? { __html: convert.toHtml(message.data) } : null} />
+        {messageHistory.toReversed().map((message: { data: string }, idx: number) => (
+            <span key={idx} dangerouslySetInnerHTML={message ? { __html: convert.toHtml(message.data) } : { __html: null }} />
             ))}
             </div>
 

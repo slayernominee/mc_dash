@@ -182,7 +182,7 @@ export default function SetupPage() {
         <SelectValue placeholder="Select the Version" />
         </SelectTrigger>
         <SelectContent>
-        {versions.map((version) => (
+        {versions.map((version: any) => (
             <SelectItem key={version} value={version}>{version}</SelectItem>
         ))}
         </SelectContent>

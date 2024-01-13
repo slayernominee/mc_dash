@@ -11,7 +11,7 @@ import { useRef } from "react"
 export type File = {
   name: string,
   type: "file" | "folder",
-  modified: number
+  modified: number,
 }
 
 

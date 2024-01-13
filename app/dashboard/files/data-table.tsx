@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
   })
   
   React.useEffect(() => {
-  getSelected(Object.keys(rowSelection).map((key) => table.getRowModel().rows[key]))
+  getSelected(Object.keys(rowSelection).map((key: any) => table.getRowModel().rows[key]))
   }, [rowSelection])
 
   return (

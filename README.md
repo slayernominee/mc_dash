@@ -18,7 +18,7 @@ A free & opensource Minecraft Dashboard to control your server
 ## TO-DO
 - [ ] Setup Script
 - [ ] Docker Container
-- [ ] Backend Modifiable Cors
+- [ ] Backend Cors Settings, if you dont want use *
 - [ ] File Editor
 - [ ] Explorer Feature: Duplicate, Download, Move
 - [ ] Dashboard: Get World, Get Gamemode

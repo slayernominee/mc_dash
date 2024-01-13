@@ -47,7 +47,7 @@ async function renameFile(oldName: string, newName: string) {
 export default function Home() {
     const [data, setData] = useState<File[]>([])
     const [path, setPath] = useState("&.")
-    const [selected, setSelected] = useState<File[]>([])
+    const [selected, setSelected] = useState<any[]>([])
     const [columns, setColumns] = useState<any[]>([])
     
     const refresh = async () => {
