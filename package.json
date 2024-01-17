@@ -22,7 +22,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
-    "@tanstack/react-table": "^8.11.3",
+    "@tanstack/react-table": "^8.11.6",
     "ansi-to-html": "^0.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -38,8 +38,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/node": "^20.10.8",
-    "@types/react": "^18.2.47",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
