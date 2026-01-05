@@ -1,3 +1,6 @@
+# NOT ACTIVELY MAINTAINED CURRENTLY
+# THERE ARE KNOWN SECURITY VULNERABILITIES AFFECTING THIS PROJECT 
+
 # MC Dash
 A free & opensource Minecraft Dashboard to control your server
 
