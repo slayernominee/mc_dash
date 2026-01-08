@@ -1,7 +1,9 @@
 # NOT ACTIVELY MAINTAINED CURRENTLY
-# THERE ARE KNOWN SECURITY VULNERABILITIES AFFECTING THIS PROJECT 
+
+# THERE ARE KNOWN SECURITY VULNERABILITIES AFFECTING THIS PROJECT
 
 # MC Dash
+
 A free & opensource Minecraft Dashboard to control your server
 
 ![console image](.github/assets/console.webp)
@@ -9,34 +11,40 @@ A free & opensource Minecraft Dashboard to control your server
 ![dashboard image](.github/assets/dashboard.webp)
 
 ## Features
+
 - [x] Live Console
-        To see console output live and execute commands
+      To see console output live and execute commands
 - [x] File Explorer
-        To delete, upload, download, etc files e.g. plugins
+      To delete, upload, download, etc files e.g. plugins
 - [x] Dashboard
-        With some general information and quick commands
+      With some general information and quick commands
 - [x] Setup Wizard
-        Here you can select a server and a version and agree to the eula.txt
+      Here you can select a server and a version and agree to the eula.txt
 
 ## TO-DO
+
 - [ ] Setup Script
 - [ ] Docker Container
-- [ ] Backend Cors Settings, if you dont want use *
+- [ ] Backend Cors Settings, if you dont want use \*
 - [ ] File Editor
 - [ ] Explorer Feature: Duplicate, Download, Move
 - [ ] Dashboard: Get World, Get Gamemode
 
-
 # Setup
 
 ## Prerequirements
+
 - Java JRE (for minecraft)
 - git
+- rust (cargo)
+- nodejs (pnpm)
 
 ## Development
-Visit the `dash/.env` file and change the token, websocket port there
 
-For Development you need the have
+Visit the `dash/.env` file and change the token, websocket port there.
+
+For Development you need to have:
+
 - rust
 - nodejs
 
@@ -46,72 +54,90 @@ For Development you need the have
 cd dash
 cargo run
 ```
+
 will run the Websocket / API server
 
 ```sh
 pnpm install
 pnpm run dev
 ```
+
 will run the frontend on http://localhost:3000/
 
 ## Deployment
 
-#### Build the Backend / Server
-This is not optimal currently and I plan in the further future if there are some people actually using this (open an issue if you do :D) to make 
-a script to setup this and docker containers (or at least the Dockerfile & docker compose file)
+**Configuration**
 
-**Config**
-Visit the `dash/.env` file and change the token, websocket port there
+Before deploying, make sure to configure the application:
 
-**Build**
-Build the Backend with 
+1.  Visit the `dash/.env` file and change the token and websocket port.
+2.  Visit the `.env.local` file and set the API URL to the public address you run the server on (e.g., `https://api.{your_domain}/...`).
+
+### Automatic Deployment (Recommended)
+
+You can use the included `run.sh` script to automatically build both the backend and frontend, and start them together.
+
 ```sh
-# cd dash (if you are not in the directory of the backend)
+# in the project directory
+chmod +x run.sh
+./run.sh
+```
+
+This script will:
+
+1.  Build the Rust backend in release mode.
+2.  Install frontend dependencies and build the Next.js application.
+3.  Start both the backend server and the frontend server.
+
+To stop the servers, simply press `Ctrl+C`.
+
+### Manual Deployment
+
+If you prefer to build and run the services manually:
+
+#### 1. Build the Backend / Server
+
+```sh
+cd dash
 cargo build --release
 cp target/release/dash dash.bin
-chmod +x dash.bin 
+chmod +x dash.bin
 ```
 
-Build the Frontend with
+#### 2. Build the Frontend
+
 ```sh
-# in the project directory 
+# in the project directory root
 pnpm install
 pnpm run build
-pnpm run start
 ```
 
-> now the backend is running on localhost and the frontend too 
+#### 3. Run the Services
 
-**Setup a Reverse Proxy**
-I recommend the Docker Container _Nginx Proxy Manager_
+You will need to run both the backend binary and the frontend server. You can use `tmux` or similar tools to keep them running.
 
-than configure it to let your domain e.g. the www, @ record (with https) to redirect to localhost:3000
-and another record e.g. api to redirect to localhost:{your port for the backend e.g. 8778, see the dash/.env file}, also with https
+_Session 1 (Backend)_
 
-
-Visit the `.env.local` file and the api url to the public adress you run the server on e.g. (https://api.{your_domain}/...)
-
-**Tmux Sessions**
-open a new tmux session (`tmux`)
-
-_Session 1_
 ```sh
 cd dash
 ./dash.bin
 ```
 
-(press _ctrl + b_ to detach)
+_Session 2 (Frontend)_
 
-_Session 2_
 ```sh
 pnpm run start
 ```
 
-(again detach)
+### Setup a Reverse Proxy
 
-> Now you should be alow to visit the dashboard on your domain :)
+I recommend the Docker Container _Nginx Proxy Manager_.
 
+Configure it to:
 
-#### Questions? 
+1.  Redirect your domain (e.g., `www`, `@`) to `localhost:3000` (Frontend).
+2.  Redirect your API subdomain (e.g., `api`) to `localhost:8778` (Backend - check `dash/.env` for the port).
+
+#### Questions?
 
 Please open an issue if you have any questions, im glad to help you :D
