@@ -21,9 +21,13 @@ export async function getPaperVersions() {
 }
 
 export async function getPaperDownloadLink(version: string) {
+  if (!/^[a-zA-Z0-9.-]+$/.test(version)) {
+    throw new Error("Invalid version format");
+  }
+
   try {
     const buildsRes = await fetch(
-      `https://api.papermc.io/v2/projects/paper/versions/${version}/builds`,
+      `https://api.papermc.io/v2/projects/paper/versions/${encodeURIComponent(version)}/builds`,
       {
         cache: "no-store",
         headers: {
@@ -40,12 +44,12 @@ export async function getPaperDownloadLink(version: string) {
     // Builds are typically returned in ascending order, so the last one is the latest.
     const latestBuild = buildsData.builds[buildsData.builds.length - 1];
 
-    if (!latestBuild) {
+    if (!latestBuild || !/^[0-9]+$/.test(String(latestBuild.build))) {
       throw new Error("No builds found for this version");
     }
 
     const buildInfoRes = await fetch(
-      `https://api.papermc.io/v2/projects/paper/versions/${version}/builds/${latestBuild.build}`,
+      `https://api.papermc.io/v2/projects/paper/versions/${encodeURIComponent(version)}/builds/${encodeURIComponent(latestBuild.build)}`,
       {
         cache: "no-store",
         headers: {
@@ -61,7 +65,7 @@ export async function getPaperDownloadLink(version: string) {
     const buildInfo = await buildInfoRes.json();
     const downloadName = buildInfo.downloads.application.name;
 
-    return `https://api.papermc.io/v2/projects/paper/versions/${version}/builds/${latestBuild.build}/downloads/${downloadName}`;
+    return `https://api.papermc.io/v2/projects/paper/versions/${encodeURIComponent(version)}/builds/${encodeURIComponent(latestBuild.build)}/downloads/${encodeURIComponent(downloadName)}`;
   } catch (error) {
     console.error("Error getting Paper download link:", error);
     throw error;

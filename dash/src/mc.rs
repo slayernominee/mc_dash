@@ -1,21 +1,26 @@
-use actix_web::{post, HttpResponse, Responder, web, Result};
-use std::path::Path;
+use actix_web::{post, web, HttpResponse, Responder, Result};
+use reqwest;
 use std::env;
 use std::fs::File;
-use reqwest;
-use tokio::process::Command;
 use std::io::Write;
+use std::path::Path;
+use tokio::process::Command;
 
-// deticated to mc files e.g. ops.json, help.yml etc 
+// deticated to mc files e.g. ops.json, help.yml etc
 
 #[post("/is_setup")]
 pub async fn is_setup() -> Result<impl Responder> {
-    let server_file_name = env::var("SERVER_FILE_NAME").expect("env arg error: is_setup : SERVER_FILE_NAME");
-    let req_eula: bool = env::var("REQUIRE_EULA").unwrap_or("False".to_string()).to_lowercase().parse().expect("failed to parse eula_req");
+    let server_file_name =
+        env::var("SERVER_FILE_NAME").expect("env arg error: is_setup : SERVER_FILE_NAME");
+    let req_eula: bool = env::var("REQUIRE_EULA")
+        .unwrap_or("False".to_string())
+        .to_lowercase()
+        .parse()
+        .expect("failed to parse eula_req");
 
     let path_to_server_file = Path::new(&server_file_name);
     if !path_to_server_file.exists() {
-        return Ok(HttpResponse::Ok().json(false))
+        return Ok(HttpResponse::Ok().json(false));
     }
 
     if req_eula {
@@ -23,18 +28,17 @@ pub async fn is_setup() -> Result<impl Responder> {
         // read the eula.txt line by line and check if any line is eula=true (remove spaced)
         let eula_file = std::fs::read_to_string(eula_path)?;
         for line in eula_file.lines() {
-            // check before if the eula is set to false 
+            // check before if the eula is set to false
             if line.trim().replace(" ", "") == "eula=false" {
-                return Ok(HttpResponse::Ok().json(false))
+                return Ok(HttpResponse::Ok().json(false));
             } else if line.trim().replace(" ", "") == "eula=true" {
-                return Ok(HttpResponse::Ok().json(true))
+                return Ok(HttpResponse::Ok().json(true));
             }
         }
         Ok(HttpResponse::Ok().json(false))
     } else {
         Ok(HttpResponse::Ok().json(true))
     }
-
 }
 
 #[post("/download_server/{url}")]
@@ -42,6 +46,10 @@ pub async fn download_server(url: web::Path<String>) -> Result<impl Responder> {
     let mut url = url.into_inner();
 
     url = url.replace("&", "/");
+
+    if !url.starts_with("https://api.papermc.io/v2/projects/paper/") {
+        return Ok(HttpResponse::BadRequest().body("Invalid download URL"));
+    }
 
     println!("Downloading Server: {}", url);
 
@@ -51,14 +59,15 @@ pub async fn download_server(url: web::Path<String>) -> Result<impl Responder> {
         std::fs::remove_file(eula_path)?;
     }
 
-    let server_file_name = env::var("SERVER_FILE_NAME").expect("env arg error: download_server : SERVER_FILE_NAME");
+    let server_file_name =
+        env::var("SERVER_FILE_NAME").expect("env arg error: download_server : SERVER_FILE_NAME");
     let path_to_server_file = Path::new(&server_file_name);
     if path_to_server_file.exists() {
         // delete the old server file
         std::fs::remove_file(path_to_server_file)?;
     }
     let mut file = File::create(path_to_server_file)?;
-    
+
     // download the server file
     let resp = reqwest::get(&url).await.expect("failed to fetch the url");
     let content = resp.bytes().await.expect("Error reading server file");
@@ -75,11 +84,11 @@ pub async fn download_server(url: web::Path<String>) -> Result<impl Responder> {
 pub async fn run_once() -> impl Responder {
     println!("Running the server once to set everything up");
 
-
-    let server_file_name = env::var("SERVER_FILE_NAME").expect("env arg error: run_once : SERVER_FILE_NAME");
+    let server_file_name =
+        env::var("SERVER_FILE_NAME").expect("env arg error: run_once : SERVER_FILE_NAME");
     let path_to_server_file = Path::new(&server_file_name);
     if !path_to_server_file.exists() {
-        return HttpResponse::Ok().json(false)
+        return HttpResponse::Ok().json(false);
     }
 
     let start_command = env::var("START_COMMAND").expect("env arg error: run_once : START_COMMAND");
@@ -87,14 +96,16 @@ pub async fn run_once() -> impl Responder {
     let base_cmd: &str = start_command.split(" ").collect::<Vec<&str>>()[0];
     let args: Vec<&str> = start_command.split(" ").collect::<Vec<&str>>()[1..].to_vec();
 
-    let mut cmd = Command::new(base_cmd).args(args).spawn().expect("Failed to start the server once");
+    let mut cmd = Command::new(base_cmd)
+        .args(args)
+        .spawn()
+        .expect("Failed to start the server once");
 
     cmd.wait().await.unwrap();
     println!("Finished the first server run");
 
     HttpResponse::Ok().json(true)
 }
-
 
 #[post("/agree_to_eula")]
 pub async fn agree_to_eula() -> Result<impl Responder> {
