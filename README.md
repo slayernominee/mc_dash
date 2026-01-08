@@ -4,6 +4,25 @@ MC Dash is a powerful, free, and open-source dashboard designed to give you tota
 
 ---
 
+## 🖼️ Showcase
+
+### Live Console
+
+![console image](.github/assets/console.webp)
+_Real-time log monitoring with ANSI color support and instant command execution._
+
+### Dashboard Overview
+
+![dashboard image](.github/assets/dashboard.webp)
+_Monitor server health, resource usage, and manage core status at a glance._
+
+### File Management
+
+![files image](.github/assets/files.webp)
+_A full-featured web-based file explorer to manage plugins, worlds, and configurations._
+
+---
+
 ## 🌟 Key Features
 
 | Feature              | Description                                                                                               |
@@ -12,11 +31,6 @@ MC Dash is a powerful, free, and open-source dashboard designed to give you tota
 | **📁 File Explorer** | Manage your plugins, worlds, and configs directly from the browser (Upload, Download, Delete).            |
 | **📊 Dashboard**     | At-a-glance server status, resource usage, and quick-action buttons.                                      |
 | **🧙 Setup Wizard**  | Effortless server installation. Select PaperMC or custom versions, and handle EULA agreements in seconds. |
-
-### Preview
-
-![console image](.github/assets/console.webp)
-_The sleek, dark-themed terminal for real-time log monitoring._
 
 ---
 
